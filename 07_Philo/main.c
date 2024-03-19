@@ -6,24 +6,29 @@ void print_error(const char* error)
   exit(1);
 }
 
-void  parser(t_input **input, char **av, int ac)
+bool  parser(t_input **input, char **av, int ac)
 {
   (*input)->philophers = ft_philo_atol(av[1]);
+  if ((*input)->philophers == -1)
+    return 1;
   (*input)->time_to_die = ft_philo_atol(av[2]);
+  if ((*input->time_to_die == -1))
+    return 1;
   (*input)->time_to_eat = ft_philo_atol(av[3]);
+  if ((*input->time_to_eat) == -1)
+    return 1;
   (*input)->time_to_sleep = ft_philo_atol(av[4]);
+  if ((*input)->time_to_sleep == -1)
+    return 1;
   if (ac == 5)
     (*input)->cap_meals = 0;
   else if (ac == 6)
+  {
       (*input)->cap_meals = ft_philo_atol(av[5]);
-
-}
-
-void  init_input(t_input **input)
-{
-  *(input) = (t_input *)malloc(sizeof(t_input));
-  if (!*input)
-    print_error("Malloc Error\n");
+      if ((*input)->cap_meals == -1)
+          return 1;
+  }
+  return (0)
 }
 
 long  ft_philo_atol(char *nbr)
@@ -35,7 +40,7 @@ long  ft_philo_atol(char *nbr)
   while(*nbr >= '0' && *nbr <= '9')
     result = result * 10 + (*nbr - '0');
   if(*nbr != '\0' || result > INT_MAX || result < INT_MIN)
-    print_error("INVALID INPUT");
+    return (-1);
   return (result);
 }
 
@@ -45,7 +50,12 @@ int main(int ac, char **av)
 
   if (ac == 5 || ac == 6)
   {
-    init_input(&input);
-    parser(&input, av);
+    input = (t_input *)malloc(sizeof(t_input));
+    if (!input)
+      print_error("Malloc Error\n");
+    if (!parser(&input, av))
+      free(input);
+    //todo el philo xD
   }
+  return 0;
 }
