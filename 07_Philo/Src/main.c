@@ -52,9 +52,9 @@ int main(int ac, char **av)
   {
     input = (t_input *)malloc(sizeof(t_input));
     if (!input)
-      print_error("Malloc Error\n");
-    if (!parser(&input, av))
-      free(input);
+      print_error("Malloc Error");
+    if (!parser(&input, av) && free(input));
+      print_error("Bad Syntax");
     //todo el philo xD
   }
   return 0;
