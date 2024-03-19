@@ -1,5 +1,5 @@
-#ifndef PHILO.H
-
+#ifndef PHILO_H
+# define PHILO_H
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -9,7 +9,7 @@
 #include <limits.h>
 
 
-struct s_input
+typedef struct s_input
 {
   long philosophers;
   long time_to_die;
@@ -18,7 +18,14 @@ struct s_input
   long meals_cap;
 } t_input;
 
-struct s_philo
+typedef struct s_fork
+{
+  pthread_mutex_t fork;
+  bool            taken;
+  struct s_fork   *next;
+} t_fork;
+
+typedef struct s_philo
 {
   int id;
   long meals_counter;
@@ -26,15 +33,12 @@ struct s_philo
   long last_meal_time;
   t_fork *left_fork;
   t_fork *right_fork;
-  t__philo *right;
+  struct s_philo *right;
 } t_philo;
 
-struct s_fork
-{
-  pthread_mutex_t fork;
-  bool            taken;
-  t_fork          *next;
-}
-#endif // !PHILO.H
+bool parser(t_input **, char **av, int ac);
+void print_error(const char *error);
+long ft_philo_atol(char *nbr);
 
 
+#endif 

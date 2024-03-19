@@ -1,15 +1,21 @@
 NAME = philo
 
+CC = gcc
+C_FLAGS = -Werror -Wextra -Wall -g3
+C_FLAGS = -fsanitize=address
 
-C_FLAGS = -Werror -Wextra -Wall -Pthreads -g3
 
-SRC_FILES = main.c\
-					utils.c\
-					philo.c\
-SOURCES = (addpat Src/ SRC_FILES)
+SRC_FILES = main.c \
 
-LIB = Lib/philo.h
+SOURCES = $(addprefix Src/, $(SRC_FILES))
+OBJECTS = $(SOURCES:.c=.o)
+INCLUDES = -IInc/
 
-all: NAME
-	gcc $(C_FLAGS) $(LIB) $(SOURCES) -o $(NAME)
+all: $(NAME)
+
+$(NAME): $(SOURCES)
+	$(CC) $(C_FLAGS) $(INCLUDES) $(SOURCES) -o $(NAME)
+
+clean:
+	rm -f $(NAME)
 
