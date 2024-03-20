@@ -1,23 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error_bonus.c                                      :+:      :+:    :+:   */
+/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alepinto <alepinto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alepinto <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/07 00:20:47 by alepinto          #+#    #+#             */
-/*   Updated: 2023/10/07 03:53:31 by alepinto         ###   ########.fr       */
+/*   Created: 2023/03/15 11:19:54 by alepinto          #+#    #+#             */
+/*   Updated: 2023/03/15 11:22:47 by alepinto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "checker.h"
+#include "libft.h"
 
-void	ft_error(char *msg)
-{	
+void	ft_putendl_fd(char *s, int fd)
+{
 	int	i;
 
 	i = 0;
-	(void)msg;
-	ft_putstr_fd("Error\n", 2);
-	exit(1);
+	while (s[i] != '\0')
+	{
+		write(fd, &s[i], 1);
+		i++;
+	}
+	write(fd, "\n", 1);
 }

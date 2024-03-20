@@ -20,7 +20,7 @@ void	ft_swap_bonus(t_stack **stack)
 	long	aux_ind2;
 
 	if (*stack == NULL || (*stack)->next == NULL)
-		ft_error("ERROR: EMPTY STACK\n");
+		ft_error();
 	aux1 = (*stack)->nbr;
 	aux2 = (*stack)->next->nbr;
 	aux_ind1 = (*stack)->index;

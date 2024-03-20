@@ -43,11 +43,12 @@ CFLAGS += -g3 -fsanitize=address
 
 #NAME
 NAME = push_swap
-NAME_BONUS = checker
+NAME_BONUS = $(addprefix $(CHECKER_DIR), "checker")
 
 #INCLUDES
 INC_DIR = Libft
 INC = -I $(INC_DIR)
+CHECKER_DIR = ../Checker/
 
 #LINKER
 LINK = -LLibft -lft
@@ -63,14 +64,14 @@ $(NAME) :$(OBJ)
 
 bonus: $(NAME_BONUS)
 
-$(NAME_BONUS) :$(OBJ_BONUS)
-	make -sC $(INC_DIR)
-	$(CC) $(OBJ_BONUS) $(CFLAGS) $(LINK) -o $(NAME_BONUS)
-
+$(NAME_BONUS) :
+	make -sC $(CHECKER_DIR)
 	
 clean:
-	@$(RM)  -f $(OBJ) $(OBJ_BONUS)|| true
-	make fclean -sC Libft || true
+	@$(RM)  -f $(OBJ)
+	
+	make fclean -sC $(INC_DIR)
+	make fclean -sC $(CHECKER_DIR)
 
 fclean: clean
 	$(RM) $(NAME) $(NAME_BONUS) || true

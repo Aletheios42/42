@@ -25,7 +25,7 @@ void	duplicate_checker(char **nbr)
 		while (nbr[j])
 		{
 			if (ft_atoi(nbr[i]) == ft_atoi(nbr[j]))
-				ft_error("ERROR: DUPLICATED INPUT\n");
+				ft_error();
 			j++;
 		}
 		i++;
@@ -37,20 +37,20 @@ void	valid_int_checker(char *nbr)
 	long	aux;
 
 	if (!*nbr)
-		ft_error("ERROR: EMPTY ARGUMENT\n");
+		ft_error();
 	if ((*nbr == '-' || *nbr == '+'))
 		nbr++;
 	if (*nbr == '\0')
-		ft_error("ERROR: NO NUMBER AFTER SIGN\n");
+		ft_error();
 	while (*nbr != '\0')
 	{
 		if (*(nbr) < '0' || *(nbr) > '9')
-			ft_error("ERROR: INVALID SYNTAX ARGUMENT\n");
+			ft_error();
 		nbr++;
 	}
 	aux = ft_atol(nbr);
 	if (aux > INT_MAX || aux < INT_MIN)
-		ft_error("ERROR: NUMBER IS TOO LARGE\n");
+		ft_error();
 }
 
 void	ft_checker(char **nbr)

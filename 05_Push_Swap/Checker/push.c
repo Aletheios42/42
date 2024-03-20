@@ -17,7 +17,7 @@ void	ft_pushtob_bonus(t_stack **stack_a, t_stack **stack_b)
 	t_stack	*aux;
 
 	if (*stack_a == NULL)
-		ft_error("ERROR: EMPTY STACKaaaa\n");
+		ft_error();
 	aux = *stack_a;
 	*stack_a = (*stack_a)->next;
 	if (*stack_a != NULL)
@@ -34,7 +34,7 @@ void	ft_pushtoa_bonus(t_stack **stack_a, t_stack **stack_b)
 	t_stack	*aux;
 
 	if (*stack_b == NULL)
-		ft_error("ERROR: EMPTY STACK\bbbbbn");
+		ft_error();
 	aux = *stack_b;
 	*stack_b = (*stack_b)->next;
 	if (*stack_b != NULL)

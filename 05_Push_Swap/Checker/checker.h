@@ -60,6 +60,6 @@ char	**ft_argv_cleaner(int argc, char **argv);
 void	ft_stackadd_back(t_stack **stack, t_stack *node);
 
 //ERROR   error.c
-void	ft_error(char *msg);
+void	ft_error(void);
 
 #endif

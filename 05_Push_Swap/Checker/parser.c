@@ -47,7 +47,7 @@ t_stack	*stack_a_maker(char **nbr)
 	{
 		node = (t_stack *)ft_calloc(sizeof(t_stack), 1);
 		if (!node)
-			ft_error("MALLOC\n");
+			ft_error();
 		node->nbr = ft_atol(nbr[i]);
 		ft_stackadd_back(&stack_a, node);
 		i++;

@@ -35,7 +35,7 @@ void	execute_move(t_stack **stack_a, t_stack **stack_b, char *line)
 	else if (ft_strncmp(line, "sb\n", 3) == 0)
 		ft_swap_bonus(stack_b);
 	else
-		ft_error("error1");
+		ft_error();
 }
 
 void	execute_sort(t_stack **stack_a, t_stack **stack_b)
