@@ -1,33 +1,5 @@
 #include "../include/fdf.h"
 
-t_point	**init_coordinates(int width, int depth)
-{
-	t_point	**coordinates;
-	int		i;
-	int		j;
-
-	coordinates = malloc(width * sizeof(t_point *));
-	if (!coordinates)
-		return (NULL);
-	i = 0;
-	while (i < width)
-	{
-		coordinates[i] = malloc(depth * sizeof(t_point));
-		if (!coordinates[i])
-			return (NULL);
-		j = 0;
-		while (j < depth)
-		{
-			coordinates[i][j].x = 0;
-			coordinates[i][j].y = 0;
-			coordinates[i][j].z = 0;
-			coordinates[i][j].color = 0;
-			j++;
-		}
-		i++;
-	}
-	return (coordinates);
-}
 
 void	center_to_origin(t_map *map)
 {

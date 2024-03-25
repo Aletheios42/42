@@ -10,6 +10,8 @@ void init_fdf(t_fdf **fdf)
   (*fdf)->image = mlx_new_image(mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
 	(*fdf)->buffer = mlx_get_data_addr((*fdf)->image, &((*fdf)->pixel_bits), \
 			&((*fdf)->line_bytes), &((*fdf)->endian);
+  (*fdf)->map = NULL;
+  (*fdf)->cam = NULL;
 }
 
 t_map	*init_map(void)
@@ -19,22 +21,14 @@ t_map	*init_map(void)
 	map = malloc(sizeof(t_map));
 	if (!map)
 		return (NULL);
-	map->coordinates = NULL;
-	map->max_x = 0;
-	map->max_y = 0;
+	map->coors = NULL;
+	map->length = 0;
+	map->width = NULL;
 	map->max_z = 0;
 	map->min_z = 0;
 	return (map);
 }
 
-t_image	*init_image(void *mlx)
-{
-	t_image	*image;
-
-	image = malloc(sizeof(t_image));
-	if (!image)
-		return (NULL);
-	}
 
 t_cam	*init_cam(t_map *map)
 {

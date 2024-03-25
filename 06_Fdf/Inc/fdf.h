@@ -22,9 +22,9 @@ typedef struct s_point
 
 typedef struct s_map
 {
-	t_point	**coordinates;
-	int		max_x;
-	int		max_y;
+	int ***cors;
+	int		lenght;
+	int		*width;
 	int		max_z;
 	int		min_z;
 }	t_map;
