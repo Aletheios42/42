@@ -27,14 +27,14 @@ void	pipex(char **argv, char **env)
 
 void	pipex_bonus(int argc, char **argv, char **env)
 {
-	int		fd[2];
+	int		fd[3][2];
 	int		pos;
 	pid_t	child;
 
 	pos = 2;
-	if (pipe(fd) < 0)
+  pos += ft_first_child(fd, argv, env);
+	if (pipe(fd[1]) < 0)
 		ft_error("pipex");
-	pos += ft_first_child(fd, argv, env);
 	while (argc - 2 > ++pos)
 		child_middle(fd, pos, argv, env);
 	child = child_output(fd, argc - 2, argv, env);
