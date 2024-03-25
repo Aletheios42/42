@@ -20,11 +20,24 @@ typedef struct s_point
 	int		color;
 }	t_point;
 
+typdef struct t_coors
+{
+  int height;
+  int color;
+  void *right;
+  void *down;
+}
+
+typedef struct s_dim
+{
+  int width;
+  void *next;
+}
+
 typedef struct s_map
 {
-	int ***cors;
-	int		lenght;
-	int		*width;
+	t_coors   *coors;
+  t_dim  dim;
 	int		max_z;
 	int		min_z;
 }	t_map;
@@ -35,21 +48,6 @@ typedef struct s_line
 	t_point	end;
 	float	transform_z;
 }	t_line;
-
-typedef struct s_color
-{
-	int	start_color;
-	int	start_r;
-	int	start_g;
-	int	start_b;
-	int	end_color;
-	int	end_r;
-	int	end_g;
-	int	end_b;
-	int	delta_r;
-	int	delta_g;
-	int	delta_b;
-}	t_color;
 
 
 typedef struct s_cam
