@@ -2,32 +2,22 @@ NAME 		= fdf
 MLX 		= libmlx_Linux.a
 LIBFT 		= libft.a
 
-LFT_PATH 	= ./libft/
-MLX_PATH 	= ./mlx_linux/
-INCLUDES 	= ./include
-SRCDIR 		= ./srcs/
+LFT_PATH 	= ./Libft/
+MLX_PATH 	= ./minilibx-linux/
+INCLUDES 	= ./Inc/
+SRCDIR 		= ./Src/
 
-SRC_FILE 	= main.c \
-					close.c \
-					color.c \
-					draw.c \
-					error.c \
-					init_utils.c \
+SRC_FILES 	= main.c \
 					init.c \
-					key_handle.c \
-					menu.c \
-					project.c \
-					read.c \
-					render.c \
-					rotate.c \
-					transform.c \
-					utils.c
+					init_utils.c \
+					parser.c \
 
-OBJ= $(SRC_FILE:.c=.o)
+SRC = $(addprefix $(SRCDIR), $(SRC_FILES))
+OBJ= $(FILES:.c=.o)
 
 #compilation
 CF 			= -Wall -Wextra -Werror
-CC 			= clang
+CC 			= gcc
 MLX_CF 		= -lm -lbsd -lmlx -lXext -lX11
 CFI 		= -I$(INCLUDES)
 
@@ -79,6 +69,8 @@ fclean: clean
 	@printf "$(GR)All libraries removed!$(RC)\n\n"
 	make cleanleaks
 
+print:
+	printf $(SRC)
 
 .PHONY: clean fclean re rebonus all bonus
 
