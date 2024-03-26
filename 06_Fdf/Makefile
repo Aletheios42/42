@@ -67,7 +67,6 @@ fclean: clean
 	@make fclean -C $(LFT_PATH)
 	@make clean -C $(MLX_PATH)
 	@printf "$(GR)All libraries removed!$(RC)\n\n"
-	make cleanleaks
 
 print:
 	printf $(SRC)
