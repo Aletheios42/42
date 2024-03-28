@@ -1,18 +1,36 @@
 NAME 		= fdf
-MLX 		= libmlx_Linux.a
-LIBFT 		= libft.a
 
 LFT_PATH 	= ./Libft/
-MLX_PATH 	= ./minilibx-linux/
-INCLUDES 	= ./Inc/
-SRCDIR 		= ./Src/
+LIBFT 		= libft.a
 
+MLX_PATH 	= ./minilibx-linux/
+MLX 		= libmlx_Linux.a
+ifeq ($(UNAME), Darwin)
+	# mac
+    FLAGS += -D MAC_OS -Iminilibx_macos
+    LD += -framework OpenGL -framework AppKit -L minilibx_macos -lmlx 
+    MINILIBX = minilibx_macos/libmlx.a
+    MINILIB_PATH = ./minilibx_macos
+else
+	#Linux and others...
+    MLX_CF += -lbsd -L minilibx-linux -lmlx -lXext -lX11
+    MLX = minilibx-linux/libmlx.a
+    MINILIB_PATH = ./minilibx-linux
+endif
+
+INC_DIR 	= ./Inc/
+INC_FILES = fdf.h \
+						color.h \
+						keys.h \
+INC = $(addprefix $(INC_DIR), $(INC_FILES))
+
+SRC_DIR 		= ./Src/
 SRC_FILES 	= main.c \
 					init.c \
 					init_utils.c \
 					parser.c \
 
-SRC = $(addprefix $(SRCDIR), $(SRC_FILES))
+SRC = $(addprefix $(SRC_DIR), $(SRC_FILES))
 OBJ= $(FILES:.c=.o)
 
 #compilation
@@ -41,12 +59,12 @@ $(OBJ): $(SRC)
 
 $(MLX):
 	@printf "\n$(CY)Generating MiniLibX...$(RC)\n"
-	@make -C $(MLX_PATH)
+	@make -sC $(MLX_PATH)
 	@printf "$(GR)MiniLibX created!$(RC)\n\n"
 
 $(LIBFT):
 	@printf "\n$(GR)Generating Libft...$(RC)\n"
-	@make -C $(LFT_PATH)
+	@make -sC $(LFT_PATH)
 	@printf "$(GR)Libft created!$(RC)\n\n"
 
 bonus: all
@@ -57,15 +75,15 @@ rebonus: fclean bonus
 
 clean:
 	@printf "\n$(YE)Cleaning all object files from libft...$(RC)\n"
-	@make clean -C $(LFT_PATH)
+	@make clean -sC $(LFT_PATH)
 	@printf "$(GR)Libft objects removed!$(RC)\n\n"
 	$(RM) -rf $(OBJ) $(BONUS_OBJ) objs/
 
 fclean: clean
 	@printf "\n$(YE)Cleaning all additional objects and libraries...$(RC)\n"
 	$(RM) -rf $(NAME) $(BONUS_OBJ) objs/
-	@make fclean -C $(LFT_PATH)
-	@make clean -C $(MLX_PATH)
+	@make fclean -sC $(LFT_PATH)
+	@make clean -sC $(MLX_PATH)
 	@printf "$(GR)All libraries removed!$(RC)\n\n"
 
 print:

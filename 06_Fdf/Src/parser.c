@@ -11,29 +11,32 @@ include "fdf.h"
 //coors[1] = esta es former-row(iterable) y graba el down con new-row
 //coors[2] =  esta es new-row (iterable) y graba derecha
 
-void set_row(t_map **map, char *line)
-{
-  static int    i;
-  int j;
-  static t_coors *former_row_reference;
-  t_coors *former_row = NULL;
 
-  j = 0;
-  while(*line != '\n' || *line != '\0')
+
+void set_row(t_coors **coors, char *line)
+{
+  t_row *current_row;
+
+  while (*line != '\n' && *line != '\0')
   {
-    //el maps asi esta mal pensado
-    map->coors[i][j]->height = atoi(&line);
-    map->coors[i][j]->color  = atoi_color(&line);
-    while (*line == ' ')
-      *line++;
-    j++;
+    current_row = (t_row *)malloc(sizeof(t_row));
+    if (!current_row)
+      return (NULL);
+    current_row->right = NULL;
+    current_row->height = 0;
+    current_row->color = 0;
+    current_row = set_data(line)
+    current_row = current_row->right;
+    while (*line != ' ')
+      line++;
   }
-  i++;
+  coors->row = current_row;
 }
 
 void parser(t_fdf **fdf, char *map_file)
 {
   t_dim *dim;
+  t_map *datamap;
   int fd;
   char *line;
 
@@ -47,10 +50,10 @@ void parser(t_fdf **fdf, char *map_file)
       break;
     if (!check_row_syntax(line))
       exit(2);
-    dim->width = set_row_width(line);
-    dim = dim->next;
-    set_row(&((*fdf)->map), line);
+    set_row(datamap->coors, line);
+    datamap->coors = datamap->coors->next;
     free(line);
   }
+  (*fdf)->map = datamap;
 }
 
