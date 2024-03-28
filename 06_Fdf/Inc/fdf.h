@@ -46,7 +46,6 @@ typedef struct s_line
 	float	transform_z;
 }	t_line;
 
-
 typedef struct s_cam
 {
 	int		projection;
