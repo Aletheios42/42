@@ -1,43 +1,97 @@
-#include "fdf.h"
+#include <stdlib.h>  // Para malloc y free
+#include "../Inc/fdf.h"  // Asegúrate de que este archivo contenga las definiciones necesarias.
 
-void set_row(t_coors **coors, char *line)
-{
-  t_row *current_row = NULL;
+// Función para asignar la función de transición de estados
+void assign_state_transition_function(Transition (*state_transition_function)[TOKEN_COUNT]) {
+    Transition state_transition_table[STATE_COUNT][TOKEN_COUNT] = {
+        {{parse_number, STATE_READ_NUMBER},
+         {NULL, STATE_ERROR},
+         {NULL, STATE_ERROR},
+         {NULL, STATE_START},
+         {handle_newline, STATE_START},
+         {handle_eof, STATE_END},
+         {handle_error, STATE_ERROR}},
+        {{NULL, STATE_ERROR},
+         {NULL, STATE_ERROR},
+         {NULL, STATE_ERROR},
+         {NULL, STATE_AFTER_NUMBER},
+         {NULL, STATE_AFTER_NUMBER},
+         {NULL, STATE_ERROR},
+         {handle_error, STATE_ERROR}},
+        {{parse_number, STATE_READ_NUMBER},
+         {NULL, STATE_ERROR},
+         {handle_error, STATE_ERROR},
+         {NULL, STATE_AFTER_NUMBER},
+         {handle_newline, STATE_START},
+         {handle_eof, STATE_END},
+         {handle_error, STATE_ERROR}},
+        {{NULL, STATE_ERROR},
+         {parse_hex, STATE_READ_HEX},
+         {NULL, STATE_ERROR},
+         {NULL, STATE_ERROR},
+         {NULL, STATE_ERROR},
+         {NULL, STATE_ERROR},
+         {handle_error, STATE_ERROR}},
+        {{NULL, STATE_ERROR},
+         {NULL, STATE_ERROR},
+         {NULL, STATE_ERROR},
+         {NULL, STATE_EXPECT_SPACE_OR_NEWLINE},
+         {handle_newline, STATE_START},
+         {NULL, STATE_ERROR},
+         {handle_error, STATE_ERROR}},
+        {{parse_number, STATE_READ_NUMBER},
+         {NULL, STATE_ERROR},
+         {NULL, STATE_ERROR},
+         {NULL, STATE_EXPECT_SPACE_OR_NEWLINE},
+         {handle_newline, STATE_START},
+         {handle_eof, STATE_END},
+         {handle_error, STATE_ERROR}},
+        {{NULL, STATE_END},
+         {NULL, STATE_END},
+         {NULL, STATE_END},
+         {NULL, STATE_END},
+         {NULL, STATE_END},
+         {NULL, STATE_END},
+         {NULL, STATE_END}},
+        {{NULL, STATE_ERROR},
+         {NULL, STATE_ERROR},
+         {NULL, STATE_ERROR},
+         {NULL, STATE_ERROR},
+         {NULL, STATE_ERROR},
+         {NULL, STATE_ERROR},
+         {NULL, STATE_ERROR}}};
 
-  while (*line != '\n' && *line != '\0')
-  { 
-    if (!init_row(&current_row))
-      return ;
-    current_row = set_data(line)
-    current_row = current_row->right;
-    while (*line != ' ')
-      line++;
-  }
-  (*coors)->row = current_row;
+    // Asignar la función de transición de estados
+    for (int i = 0; i < STATE_COUNT; i++) {
+        for (int j = 0; j < TOKEN_COUNT; j++) {
+            state_transition_function[i][j] = state_transition_table[i][j];
+        }
+    }
 }
 
-void parser(t_fdf **fdf, char *map_file)
-{
-  t_map *datamap = NULL;
-  t_coors *datacoors = NULL;
-  char *line = NULL;
-  int fd;
+// Constructor puro del autómata
+Transition** new_automaton() {
+    // Crear una nueva instancia del autómata
+    Transition **automaton_instance = malloc(sizeof(Transition*) * STATE_COUNT);
+    for (int i = 0; i < STATE_COUNT; i++) {
+        automaton_instance[i] = malloc(sizeof(Transition) * TOKEN_COUNT);
+    }
 
-  fd = open(map_file)
-  if (fd == -1)
-      exit (1);
-  init_map(datamap);
-  while (1)
-  {
-    line = get_next_line(fd);
-    if (!line)
-      break;
-    init_coors(&datacoors);
-    set_row(datamap->coors, line);
-    datamap->coors = datamap->coors->next;
-    free(line);
-  }
-  (*fdf)->map = datamap;
-  close(fd);
+    // Asignar la función de transición de estados
+    assign_state_transition_function(automaton_instance);
+    
+    return automaton_instance;
+}
+
+// Función para liberar la memoria del autómata
+void delete_automaton(Transition **automaton_instance) {
+    if (automaton_instance) {
+        // Liberar cada fila de la función de transición de estados
+        for (int i = 0; i < STATE_COUNT; i++) {
+            free(automaton_instance[i]);
+        }
+        // Liberar el puntero de la función de transición de estados
+        free(automaton_instance);
+    }
 }
 

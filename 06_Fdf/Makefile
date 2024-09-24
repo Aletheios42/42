@@ -3,7 +3,7 @@ NAME 		= fdf
 LFT_PATH 	= ./Libft/
 LIBFT 		= libft.a
 
-MLX_PATH 	= ./minilibx-linux/
+MLX_PATH 	= ./minilibx_linux/
 MLX 		= libmlx_Linux.a
 ifeq ($(UNAME), Darwin)
 	# mac
@@ -14,7 +14,7 @@ ifeq ($(UNAME), Darwin)
 else
 	#Linux and others...
     MLX_CF += -lbsd -L minilibx-linux -lmlx -lXext -lX11
-    MLX = minilibx-linux/libmlx.a
+    MLX = minilibx_linux/libmlx.a
     MINILIB_PATH = ./minilibx-linux
 endif
 
