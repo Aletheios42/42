@@ -4,7 +4,7 @@
 
 #include "../Libft/libft.h"
 #include "../minilibx_linux/mlx.h"
-#include "./automata.h"
+#include "./automaton.h"
 
 #include <fcntl.h>
 #include <math.h>

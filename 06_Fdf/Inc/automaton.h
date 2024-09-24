@@ -10,28 +10,36 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef AUTOMATA_H
-#define AUTOMATA_H
+#ifndef AUTOMATON_H
+#define AUTOMATON_H
 
 #include <stddef.h>
 
-/* Definición de estados */
+// Function prototypes for actions
+void handle_height(void);  // Handle height input
+void handle_color(void);   // Handle color input
+void handle_space(void);   // Handle spaces
+void handle_newline(void); // Handle newlines
+void handle_eof(void);     // Handle end of file
+void handle_error(void);   // Handle errors
+void handle_comma(void);   // Handle commas
+
+/* Definition of states */
 enum e_state {
   STATE_START,
-  STATE_READ_NUMBER,
-  STATE_AFTER_NUMBER,
-  STATE_AFTER_COMMA,
-  STATE_READ_HEX,
-  STATE_EXPECT_SPACE_OR_NEWLINE,
+  STATE_HEIGHT,  // State for height
+  STATE_COLOR,   // State for color
+  STATE_SPACE,   // State for space
+  STATE_NEWLINE, // State for newline
   STATE_END,
   STATE_ERROR,
   STATE_COUNT
 };
 
-/* Definición de tokens */
+/* Definition of tokens */
 enum e_token {
-  TOKEN_NUMBER,
-  TOKEN_HEX_COLOR,
+  TOKEN_HEIGHT, // Token for height
+  TOKEN_COLOR,  // Token for color
   TOKEN_COMMA,
   TOKEN_SPACE,
   TOKEN_NEWLINE,
@@ -40,8 +48,8 @@ enum e_token {
   TOKEN_COUNT
 };
 
-/* Definición de transición */
-struct s_transition {
+/* Transition structure definition */
+struct s_automaton {
   void (*action)(void);
   enum e_state next_state;
 };

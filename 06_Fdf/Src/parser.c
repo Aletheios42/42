@@ -1,97 +1,60 @@
-#include <stdlib.h>  // Para malloc y free
-#include "../Inc/fdf.h"  // Asegúrate de que este archivo contenga las definiciones necesarias.
+#include "automaton.h" // Asegúrate de incluir el archivo correcto.
+#include "fdf.h"       // Incluye tu estructura t_map.
+#include <stdlib.h>
+#include <string.h> // Para usar strtok
 
-// Función para asignar la función de transición de estados
-void assign_state_transition_function(Transition (*state_transition_function)[TOKEN_COUNT]) {
-    Transition state_transition_table[STATE_COUNT][TOKEN_COUNT] = {
-        {{parse_number, STATE_READ_NUMBER},
-         {NULL, STATE_ERROR},
-         {NULL, STATE_ERROR},
-         {NULL, STATE_START},
-         {handle_newline, STATE_START},
-         {handle_eof, STATE_END},
-         {handle_error, STATE_ERROR}},
-        {{NULL, STATE_ERROR},
-         {NULL, STATE_ERROR},
-         {NULL, STATE_ERROR},
-         {NULL, STATE_AFTER_NUMBER},
-         {NULL, STATE_AFTER_NUMBER},
-         {NULL, STATE_ERROR},
-         {handle_error, STATE_ERROR}},
-        {{parse_number, STATE_READ_NUMBER},
-         {NULL, STATE_ERROR},
-         {handle_error, STATE_ERROR},
-         {NULL, STATE_AFTER_NUMBER},
-         {handle_newline, STATE_START},
-         {handle_eof, STATE_END},
-         {handle_error, STATE_ERROR}},
-        {{NULL, STATE_ERROR},
-         {parse_hex, STATE_READ_HEX},
-         {NULL, STATE_ERROR},
-         {NULL, STATE_ERROR},
-         {NULL, STATE_ERROR},
-         {NULL, STATE_ERROR},
-         {handle_error, STATE_ERROR}},
-        {{NULL, STATE_ERROR},
-         {NULL, STATE_ERROR},
-         {NULL, STATE_ERROR},
-         {NULL, STATE_EXPECT_SPACE_OR_NEWLINE},
-         {handle_newline, STATE_START},
-         {NULL, STATE_ERROR},
-         {handle_error, STATE_ERROR}},
-        {{parse_number, STATE_READ_NUMBER},
-         {NULL, STATE_ERROR},
-         {NULL, STATE_ERROR},
-         {NULL, STATE_EXPECT_SPACE_OR_NEWLINE},
-         {handle_newline, STATE_START},
-         {handle_eof, STATE_END},
-         {handle_error, STATE_ERROR}},
-        {{NULL, STATE_END},
-         {NULL, STATE_END},
-         {NULL, STATE_END},
-         {NULL, STATE_END},
-         {NULL, STATE_END},
-         {NULL, STATE_END},
-         {NULL, STATE_END}},
-        {{NULL, STATE_ERROR},
-         {NULL, STATE_ERROR},
-         {NULL, STATE_ERROR},
-         {NULL, STATE_ERROR},
-         {NULL, STATE_ERROR},
-         {NULL, STATE_ERROR},
-         {NULL, STATE_ERROR}}};
+// Prototipos de funciones
+int count_columns(char *line); // Esta función cuenta el número de columnas.
+void handle_height(char *token, t_map *map, int row, int col);
+void handle_color(char *token, t_map *map, int row, int col);
+void handle_space(void);
+void handle_newline(void);
+void handle_eof(void);
+void handle_error(void);
 
-    // Asignar la función de transición de estados
-    for (int i = 0; i < STATE_COUNT; i++) {
-        for (int j = 0; j < TOKEN_COUNT; j++) {
-            state_transition_function[i][j] = state_transition_table[i][j];
-        }
+// Función principal de análisis del mapa
+int parse_map(int fd, t_map *map) {
+  char *line;
+  int row = 0;
+
+  while ((line = get_next_line(fd)) != NULL) {
+    // Contar las columnas en la línea
+    int columns = count_columns(line);
+
+    // Usar el autómata para procesar la línea
+    automaton **state_automaton = assign_automaton();
+    int state = STATE_START;         // Estado inicial
+    char *token = strtok(line, " "); // Tokeniza la línea por espacios
+    int j = 0;
+
+    // Inicializa la memoria para la nueva fila
+    map->map[row] = malloc(sizeof(int *) * columns);
+    if (!map->map[row]) {
+      free(line);
+      return -1; // Error en la asignación
     }
-}
+    map->columns[row] = columns;
 
-// Constructor puro del autómata
-Transition** new_automaton() {
-    // Crear una nueva instancia del autómata
-    Transition **automaton_instance = malloc(sizeof(Transition*) * STATE_COUNT);
-    for (int i = 0; i < STATE_COUNT; i++) {
-        automaton_instance[i] = malloc(sizeof(Transition) * TOKEN_COUNT);
+    while (token != NULL) {
+      // Determina el tipo de token y llama a la función del autómata
+      int token_type = determine_token_type(token); // Debes implementar esto
+      automaton *current_automaton = state_automaton[state][token_type];
+
+      // Llama a la función correspondiente si no es NULL
+      if (current_automaton->action) {
+        current_automaton->action(token, map, row, j);
+      }
+      state = current_automaton->next_state; // Transición al siguiente estado
+
+      // Prepara el siguiente token
+      token = strtok(NULL, " ");
+      j++;
     }
 
-    // Asignar la función de transición de estados
-    assign_state_transition_function(automaton_instance);
-    
-    return automaton_instance;
-}
+    row++;
+    free(line); // Libera la línea leída
+  }
 
-// Función para liberar la memoria del autómata
-void delete_automaton(Transition **automaton_instance) {
-    if (automaton_instance) {
-        // Liberar cada fila de la función de transición de estados
-        for (int i = 0; i < STATE_COUNT; i++) {
-            free(automaton_instance[i]);
-        }
-        // Liberar el puntero de la función de transición de estados
-        free(automaton_instance);
-    }
+  map->rows = row; // Establece el número total de filas
+  return 0;        // Éxito
 }
-
