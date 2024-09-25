@@ -1,10 +1,10 @@
-NAME 		= fdf
+NAME        = fdf
 
-LFT_PATH 	= ./Libft/
-LIBFT 		= libft.a
+LFT_PATH    = ./Libft/
+LIBFT       = libft.a
 
-MLX_PATH 	= ./minilibx_linux/
-MLX 		= libmlx_Linux.a
+MLX_PATH    = ./minilibx_linux/
+MLX         = libmlx_Linux.a
 ifeq ($(UNAME), Darwin)
 	# mac
     FLAGS += -D MAC_OS -Iminilibx_macos
@@ -18,44 +18,51 @@ else
     MINILIB_PATH = ./minilibx-linux
 endif
 
-INC_DIR 	= ./Inc/
-INC_FILES = fdf.h \
-						color.h \
-						keys.h \
-INC = $(addprefix $(INC_DIR), $(INC_FILES))
+INC_DIR     = ./Inc/
+INC_FILES   = fdf.h \
+               color.h \
+               keys.h
+INC         = $(addprefix $(INC_DIR), $(INC_FILES))
 
-SRC_DIR 		= ./Src/
-SRC_FILES 	= main.c \
-					init.c \
-					init_utils.c \
-					parser.c \
+SRC_DIR     = ./Src/
+SRC_FILES   = main.c 				\
+               init.c 			\
+               parser.c 		\
+               automaton.c 	\
+               actions.c 		\
+							 mlx.c				\
 
-SRC = $(addprefix $(SRC_DIR), $(SRC_FILES))
-OBJ= $(FILES:.c=.o)
 
-#compilation
-CF 			= -Wall -Wextra -Werror
-CC 			= gcc
-MLX_CF 		= -lm -lbsd -lmlx -lXext -lX11
-CFI 		= -I$(INCLUDES)
+SRC         = $(addprefix $(SRC_DIR), $(SRC_FILES))
+# Comp# Cambiar para almacenar los archivos .o en el directorio objs/
+OBJ_DIR     = ./objs/
+OBJ         = $(addprefix $(OBJ_DIR), $(SRC_FILES:.c=.o))
 
-#common commands
-RM =rm -f
+CF          = -Wall -Wextra -Werror
 
-#rules
+CF				 	+= -g3 -fsanitize=address
+
+CC          = gcc
+MLX_CF      = -lm -lbsd -lmlx -lXext -lX11
+CFI         = -I$(INC_DIR)
+
+# Common commands
+RM          = rm -f
+
+# Rules
 all: $(NAME)
 
 $(NAME): $(OBJ) $(LIBFT) $(MLX)
 	@printf "\n$(CY)Generating FdF executable...$(RC)\n"
 	$(CC) $(CF) -o $(NAME) $(OBJ) -L $(LFT_PATH) -L $(MLX_PATH) -lft $(MLX_CF)
-	mkdir objs
-	mv $(OBJ) objs/
 	@printf "$(GR)Done!$(RC)\n\n"
 
-$(OBJ): $(SRC)
-	@printf "\n$(CY)Compiling source files...$(RC)\n"
-	$(CC) $(CF) -c -I ./includes/ $(SRC)
-	@printf "$(GR)Objects ready!$(RC)\n\n"
+# Regla para compilar los archivos .c en .o dentro del directorio objs/
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c
+	@mkdir -p $(OBJ_DIR)
+	@printf "\n$(CY)Compiling $<...$(RC)\n"
+	$(CC) $(CF) -c $(CFI) $< -o $@
+	@printf "$(GR)Object $@ ready!$(RC)\n"
 
 $(MLX):
 	@printf "\n$(CY)Generating MiniLibX...$(RC)\n"
@@ -77,17 +84,17 @@ clean:
 	@printf "\n$(YE)Cleaning all object files from libft...$(RC)\n"
 	@make clean -sC $(LFT_PATH)
 	@printf "$(GR)Libft objects removed!$(RC)\n\n"
-	$(RM) -rf $(OBJ) $(BONUS_OBJ) objs/
+	$(RM) -rf objs/
 
 fclean: clean
 	@printf "\n$(YE)Cleaning all additional objects and libraries...$(RC)\n"
-	$(RM) -rf $(NAME) $(BONUS_OBJ) objs/
+	$(RM) -rf $(NAME) objs/
 	@make fclean -sC $(LFT_PATH)
 	@make clean -sC $(MLX_PATH)
 	@printf "$(GR)All libraries removed!$(RC)\n\n"
 
 print:
-	printf $(SRC)
+	@printf $(SRC)
 
 .PHONY: clean fclean re rebonus all bonus
 
@@ -97,3 +104,4 @@ RE	= \033[31;1m
 YE	= \033[33;1m
 CY	= \033[36;1m
 RC	= \033[0m
+

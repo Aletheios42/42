@@ -1,60 +1,114 @@
-#include "automaton.h" // Asegúrate de incluir el archivo correcto.
-#include "fdf.h"       // Incluye tu estructura t_map.
-#include <stdlib.h>
-#include <string.h> // Para usar strtok
+#include "../Inc/fdf.h" // Asegúrate de que este archivo contenga las definiciones necesarias.
 
-// Prototipos de funciones
-int count_columns(char *line); // Esta función cuenta el número de columnas.
-void handle_height(char *token, t_map *map, int row, int col);
-void handle_color(char *token, t_map *map, int row, int col);
-void handle_space(void);
-void handle_newline(void);
-void handle_eof(void);
-void handle_error(void);
+// Función para contar columnas en una línea
+int count_columns(const char *line) {
+  int count = 0;
+  char *temp = strdup(line); // Crea una copia temporal de la línea
+  char *token = strtok(temp, " ");
+  while (token) {
+    count++;
+    token = strtok(NULL, " ");
+  }
+  free(temp); // Libera la copia temporal
+  return count;
+}
 
-// Función principal de análisis del mapa
+// Función para determinar el tipo de token
+int determine_token_type(const char *token) {
+  if (ft_isdigit(token[0]) || (token[0] == '-' && ft_isdigit(token[1]))) {
+    return token_height; // Cambiado de TOKEN_HEIGHT a token_height
+  }
+  if (strncmp(token, "0x", 2) == 0 && strlen(token) == 8) {
+    return token_color; // Cambiado de TOKEN_COLOR a token_color
+  }
+  if (strcmp(token, "\n") == 0) {
+    return token_newline; // Cambiado de TOKEN_NEWLINE a token_newline
+  }
+  if (strcmp(token, " ") == 0) {
+    return token_space; // Cambiado de TOKEN_SPACE a token_space
+  }
+  return token_invalid; // Cambiado de TOKEN_INVALID a token_invalid
+}
+
+static void process_tokens(char *line, t_map *map, int row,
+                           t_automaton **state_automaton) {
+  int state = state_start;         // Cambiado de STATE_START a state_start
+  char *token = strtok(line, " "); // Tokeniza la línea por espacios
+  int j = 0;
+
+  while (token != NULL) {
+    int token_type = determine_token_type(token);
+    t_automaton current_automaton =
+        state_automaton[state][token_type]; // Corrige el tipo
+
+    if (current_automaton.action) {
+      current_automaton.action(token, map, row, j);
+    }
+    state = current_automaton.next_state; // Transición al siguiente estado
+    token = strtok(NULL, " ");
+    j++;
+  }
+}
+
+// Implementación de allocate_row_memory
+int allocate_row_memory(t_map *map, int row, int columns) {
+  // Asegúrate de que la memoria se haya inicializado
+  if (map->map == NULL) {
+    map->map =
+        malloc(sizeof(int **) * map->rows); // Asigna memoria para las filas
+    if (!map->map)
+      return -1; // Manejo de error
+  }
+
+  // Asigna memoria para las columnas
+  map->map[row] = malloc(sizeof(int *) * columns);
+  if (!map->map[row])
+    return -1; // Manejo de error
+
+  // Inicializa las columnas
+  for (int j = 0; j < columns; j++) {
+    map->map[row][j] =
+        malloc(sizeof(int) * 3); // Asumiendo 3 valores por punto (x, y, z)
+    if (!map->map[row][j])
+      return -1; // Manejo de error
+  }
+
+  return 0; // Éxito
+}
 int parse_map(int fd, t_map *map) {
   char *line;
-  int row = 0;
+  int row = -1;
 
-  while ((line = get_next_line(fd)) != NULL) {
-    // Contar las columnas en la línea
+  while (line != NULL || row == -1) {
+    get_next_line(fd);
     int columns = count_columns(line);
-
-    // Usar el autómata para procesar la línea
-    automaton **state_automaton = assign_automaton();
-    int state = STATE_START;         // Estado inicial
-    char *token = strtok(line, " "); // Tokeniza la línea por espacios
-    int j = 0;
-
-    // Inicializa la memoria para la nueva fila
-    map->map[row] = malloc(sizeof(int *) * columns);
-    if (!map->map[row]) {
+    if (allocate_row_memory(map, row, columns) != 0) {
       free(line);
       return -1; // Error en la asignación
     }
     map->columns[row] = columns;
 
-    while (token != NULL) {
-      // Determina el tipo de token y llama a la función del autómata
-      int token_type = determine_token_type(token); // Debes implementar esto
-      automaton *current_automaton = state_automaton[state][token_type];
-
-      // Llama a la función correspondiente si no es NULL
-      if (current_automaton->action) {
-        current_automaton->action(token, map, row, j);
-      }
-      state = current_automaton->next_state; // Transición al siguiente estado
-
-      // Prepara el siguiente token
-      token = strtok(NULL, " ");
-      j++;
-    }
-
+    t_automaton **state_automaton = assign_automaton();
+    process_tokens(line, map, row, state_automaton);
     row++;
     free(line); // Libera la línea leída
   }
 
   map->rows = row; // Establece el número total de filas
   return 0;        // Éxito
+}
+
+void parser(t_map *map, char *map_file) {
+  int fd = open(map_file, O_RDONLY);
+  if (fd < 0) {
+    perror("Error al abrir el archivo");
+    return;
+  }
+
+  if (parse_map(fd, map) != 0) {
+    close(fd);
+    return;
+  }
+
+  close(fd);
 }

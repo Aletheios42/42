@@ -1,55 +1,73 @@
-#include "../Inc/automaton.h"
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "../Inc/fdf.h"
 
-// Global variables for demonstration purposes (modify as needed)
-int current_height = 0;      // Changed from current_value to current_height
-int current_color = 0;       // Changed from current_hex_color to current_color
 
-// Function to handle height
-void handle_height(void) {
-  printf("Handling height...\n");
-  char input[] = "123"; // Example input, should come from a real source
-  current_height = atoi(input); // Convert input string to an integer
-  printf("Parsed height: %d\n", current_height);
+// Function to handle height (receives a token, a map, and the row and column)
+void handle_height(char *token, t_map *map, int row, int col) {
+  printf("Handling height at row: %d, col: %d...\n", row, col);
+(void)token;
+    (void)map;
+    (void)row;
+    (void)col;
 }
 
-// Function to handle color
-void handle_color(void) {
-  printf("Handling color...\n");
-  char input[] = "0xFF5733"; // Example hex input, should come from a real source
-  sscanf(input, "%x", &current_color); // Convert input string to hexadecimal
-  printf("Parsed color: #%06X\n", current_color); // Print the color
+// Function to handle color (receives a token, a map, and the row and column)
+void handle_color(char *token, t_map *map, int row, int col) {
+  printf("Handling color at row: %d, col: %d...\n", row, col);
+
+
+(void)token;
+    (void)map;
+    (void)row;
+    (void)col;
 }
 
-// Function to handle space
-void handle_space(void) {
-  printf("Handling space...\n");
-  // Logic to handle spaces
+// Function to handle space (receives token, map, row, and col, but does nothing
+// specific here)
+void handle_space(char *token, t_map *map, int row, int col) {
+  printf("Handling space at row: %d, col: %d...\n", row, col);
+  // Space handling logic if necessary
+(void)token;
+    (void)map;
+    (void)row;
+    (void)col;
 }
 
 // Function to handle newline
-void handle_newline(void) {
-  printf("Handling newline...\n");
-  // Logic to handle newline
+void handle_newline(char *token, t_map *map, int row, int col) {
+  printf("Handling newline at row: %d, col: %d...\n", row, col);
+  // Newline handling logic if necessary
+(void)token;
+    (void)map;
+    (void)row;
+    (void)col;
 }
 
 // Function to handle end of file
-void handle_eof(void) {
+void handle_eof(char *token, t_map *map, int row, int col) {
   printf("Handling end of file...\n");
-  // Logic to handle EOF
+  // End of file handling logic
+(void)token;
+    (void)map;
+    (void)row;
+    (void)col;
 }
 
 // Function to handle errors
-void handle_error(void) {
-  printf("Handling error...\n");
-  // Logic to handle errors
+void handle_error(char *token, t_map *map, int row, int col) {
+  printf("Handling error at row: %d, col: %d...\n", row, col);
+  // Error handling logic
+(void)token;
+    (void)map;
+    (void)row;
+    (void)col;
 }
 
-// Function to handle comma
-void handle_comma(void) {
-  printf("Handling comma...\n");
-  // Logic to handle commas
+// Function to handle commas (if used in the input)
+void handle_comma(char *token, t_map *map, int row, int col) {
+  printf("Handling comma at row: %d, col: %d...\n", row, col);
+  // Comma handling logic if necessary
+(void)token;
+    (void)map;
+    (void)row;
+    (void)col;
 }
-

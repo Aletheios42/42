@@ -1,0 +1,36 @@
+archivos y su función:
+ºmain.c:
+
+Control principal del programa. Inicializa el mapa, la cámara y comienza el bucle de renderizado.
+parser.c (falta en el código actual):
+
+Aquí deberías implementar el autómata. Cada transición será responsable de leer y clasificar los tokens del mapa.
+También se encargará de llenar la estructura t_map con las alturas y colores.
+init.c:
+
+Inicializa estructuras como t_map, t_cam, y la ventana gráfica.
+Configuración inicial de la cámara, los colores y los parámetros de visualización.
+init_utils.c:
+
+Utilidades para inicializar y liberar memoria asociada con el mapa y otros elementos.
+render.c (sugiero añadir):
+
+Dibujar el mapa una vez que ha sido cargado y parseado.
+Convertir las coordenadas 3D en 2D y aplicar la proyección.
+Usar MiniLibX para dibujar las líneas y puntos en la ventana.
+ºautomaton.c (sugiero añadir):
+
+Definición de las transiciones y acciones para el autómata.
+Implementa las funciones que manejan las acciones (handle_height, handle_color, handle_space, etc.).
+utils.c (sugiero añadir):
+
+Funciones auxiliares como la conversión de hex a RGB, manejo de errores, validación de entrada, etc.
+fdf.h:
+
+Archivo de cabecera que ya tienes, contiene las estructuras y los prototipos de las funciones. Sin embargo, deberías agregar los nuevos prototipos de las funciones que implementes.
+colors.h (si ya existe, mantener):
+
+Definir macros y funciones para los colores en el programa, o manejar funciones que generen colores desde los valores hexadecimales.
+Makefile:
+
+El Makefile parece estar bien estructurado, solo faltaría asegurarse de que los nuevos archivos (como automaton.c, render.c, etc.) estén añadidos.
