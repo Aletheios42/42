@@ -103,4 +103,3 @@ void delete_automaton(t_automaton **automaton_instance) {
     free(automaton_instance);
   }
 }
-

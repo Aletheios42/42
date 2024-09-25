@@ -79,4 +79,3 @@ typedef struct s_fdf {
 } t_fdf;
 
 #endif // STRUCTS_H
-
