@@ -2,64 +2,57 @@
 
 t_automaton **assign_automaton() {
   static t_automaton state_automaton_table[state_count][token_count] = {
-      {{handle_height, state_height},   // state_start
-       {NULL, state_error},             // token_invalid
-       {handle_comma, state_error},     // token_comma
-       {NULL, state_start},             // token_space
-       {handle_space, state_space},     // token_newline
-       {handle_newline, state_newline}, // token_eof
-       {NULL, state_error}},            // token_invalid
 
-      {{NULL, state_error},          // state_height
-       {NULL, state_error},          // token_invalid
-       {NULL, state_error},          // token_comma
-       {handle_color, state_color},  // token_space
-       {NULL, state_error},          // token_newline
-       {NULL, state_error},          // token_eof
-       {handle_error, state_error}}, // token_invalid
+      // Estado: state_start
+      {{handle_height, state_expect_separator}, // token_height
+       {handle_error, state_invalid},           // token_color
+       {handle_error, state_invalid},           // token_comma
+       {handle_space, state_expect_value},      // token_space
+       {handle_newline, state_start},           // token_newline
+       {handle_eof, state_end},                 // token_eof
+       {handle_error, state_invalid}},          // token_invalid
 
-      {{handle_color, state_color},     // state_color
-       {NULL, state_error},             // token_invalid
-       {handle_error, state_error},     // token_comma
-       {NULL, state_space},             // token_space
-       {handle_newline, state_newline}, // token_newline
-       {handle_eof, state_end},         // token_eof
-       {handle_error, state_error}},    // token_invalid
+      // Estado: state_expect_value
+      {{handle_height, state_expect_separator}, // token_height
+       {handle_color, state_expect_separator},  // token_color
+       {handle_error, state_invalid},           // token_comma
+       {handle_error, state_invalid},           // token_space
+       {handle_error, state_invalid},           // token_newline
+       {handle_eof, state_end},                 // token_eof
+       {handle_error, state_invalid}},          // token_invalid
 
-      {{NULL, state_error},          // state_space
-       {NULL, state_error},          // token_invalid
-       {NULL, state_error},          // token_comma
-       {NULL, state_error},          // token_space
-       {NULL, state_error},          // token_newline
-       {NULL, state_error},          // token_eof
-       {handle_error, state_error}}, // token_invalid
+      // Estado: state_expect_separator
+      {{handle_error, state_invalid}, // token_height
+       {handle_error, state_invalid}, // token_color
+       {handle_comma,
+        state_expect_value}, // token_comma (válido, transitar a expect_value)
+       {handle_space, state_expect_separator}, // token_space (pasar espacio y
+       // permanecer en expect_separator)
+       {handle_newline,
+        state_expect_value}, // token_newline (válido, transitar a expect_value)
+       {handle_eof, state_end},        // token_eof (fin de archivo)
+       {handle_error, state_invalid}}, // token_invalid
 
-      {{NULL, state_error},           // state_newline
-       {NULL, state_error},           // token_invalid
-       {NULL, state_error},           // token_comma
-       {NULL, state_error},           // token_space
-       {handle_newline, state_start}, // token_newline
-       {NULL, state_error},           // token_eof
-       {handle_error, state_error}},  // token_invalid
-
-      {{NULL, state_end},  // state_end
-       {NULL, state_end},  // token_invalid
+      // Estado: state_end
+      {{NULL, state_end},  // token_height
+       {NULL, state_end},  // token_color
        {NULL, state_end},  // token_comma
        {NULL, state_end},  // token_space
        {NULL, state_end},  // token_newline
        {NULL, state_end},  // token_eof
        {NULL, state_end}}, // token_invalid
 
-      {{NULL, state_error}, // state_error
-       {NULL, state_error}, // token_invalid
-       {NULL, state_error}, // token_comma
-       {NULL, state_error}, // token_space
-       {NULL, state_error}, // token_newline
-       {NULL, state_error}, // token_eof
-       {NULL, state_error}} // token_invalid
+      // Estado: state_invalid
+      {{NULL, state_invalid}, // token_height
+       {NULL, state_invalid}, // token_color
+       {NULL, state_invalid}, // token_comma
+       {NULL, state_invalid}, // token_space
+       {NULL, state_invalid}, // token_newline
+       {NULL, state_invalid}, // token_eof
+       {NULL, state_invalid}} // token_invalid
   };
 
-  // Retornar un puntero a la tabla de estado
+  // Retornar un puntero a la tabla de estados
   return (t_automaton **)state_automaton_table;
 }
 

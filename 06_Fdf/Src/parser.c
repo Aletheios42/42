@@ -1,18 +1,31 @@
 #include "../Inc/fdf.h" // Asegúrate de que este archivo contenga las definiciones necesarias.
 
-// Función para contar columnas en una línea
 int count_columns(char *line) {
   int count = 0;
-  char *token = ft_strtok(line, " ");
-  while (token) {
-    count++;
-    token = ft_strtok(NULL, " ");
+  int in_number = 0; // Para detectar si estamos dentro de un número
+
+  while (*line) {
+    // Si encontramos un dígito (caracter entre '0' y '9')
+    if (*line >= '0' && *line <= '9') {
+      if (!in_number) {
+        in_number = 1;
+        count++; // Contamos el número solo al entrar en él por primera vez
+      }
+    } else if (*line == ' ' || *line == ',' || *line == '\n' || *line == '\0') {
+      // Si encontramos un delimitador, salimos del número
+      in_number = 1;
+    }
+
+    // Avanzamos al siguiente carácter
+    line++;
   }
+
   return count;
 }
 
 // Función para determinar el tipo de token
 int determine_token_type(const char *token) {
+  // TODO mergear los 2 primeros ifs para dar token value
   if (ft_isdigit(token[0]) || (token[0] == '-' && ft_isdigit(token[1]))) {
     return token_height; // Cambiado de TOKEN_HEIGHT a token_height
   }
@@ -28,23 +41,23 @@ int determine_token_type(const char *token) {
   return token_invalid; // Cambiado de TOKEN_INVALID a token_invalid
 }
 
-static void process_tokens(char *line, t_map *map, int row,
-                           t_automaton **state_automaton) {
+int process_tokens(char *line, t_map *map, int row,
+                   t_automaton **state_automaton) {
   int state = state_start;
-  char *token = ft_strtok(line, " ");
   int j = 0;
 
-  while (token != NULL) {
-    int token_type = determine_token_type(token);
+  while (line != NULL) {
+    int token_type = determine_token_type(line);
     t_automaton current_automaton = state_automaton[state][token_type];
 
-    if (current_automaton.action) {
-      current_automaton.action(token, map, row, j);
+    if (current_automaton.action &&
+        !current_automaton.action(&line, map, row, &j)) {
+      return -1;
     }
+
     state = current_automaton.next_state;
-    token = strtok(NULL, " ");
-    j++;
   }
+  return 0;
 }
 
 // Esta funcion se dedica a leer el mapa a traves de :
@@ -53,7 +66,7 @@ static void process_tokens(char *line, t_map *map, int row,
 //(3) allocar memoria con realloc para el mapa y las dimensiones del map
 //(4) !! alocar memoria para map->colum
 //(5) llenar map->coors con los tokens
-int parse(t_map *map, char *map_file) {
+int parser(t_map *map, char *map_file) {
   char *line;
   int fd;
   int row = -1;
@@ -71,7 +84,8 @@ int parse(t_map *map, char *map_file) {
     if (init_row_memory(map, ++row, columns) == -1)
       return (free(line), close(fd), free(map), 1);
     map->columns[row] = columns;
-    process_tokens(line, map, row, state_automaton);
+    if (process_tokens(line, map, row, state_automaton))
+      return (free(line), /*liberar todo el mapa*/ -1);
     free(line);
   }
   map->rows = row;

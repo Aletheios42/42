@@ -1,28 +1,27 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
-// Enumeration of possible states in the automaton
+// Enumeración de los posibles estados en el autómata
 enum e_state {
-  state_start,
-  state_height,  // State to process height values
-  state_color,   // State to process color values
-  state_space,   // State to process spaces
-  state_newline, // State to process newlines
-  state_end,     // Final state
-  state_error,   // Error state
-  state_count    // Total number of states
+  state_start,            // Estado inicial
+  state_expect_value,     // Estado esperando un valor (height o color)
+  state_expect_separator, // Estado esperando un separador (coma, espacio, o
+                          // nueva línea)
+  state_end,              // Estado final
+  state_invalid,          // Estado para manejar entradas inválidas
+  state_count             // Número total de estados
 };
 
-// Enumeration of possible tokens the automaton can process
+// Enumeración de los posibles tokens que puede procesar el autómata
 enum e_token {
-  token_height,  // Token representing a height value
-  token_color,   // Token representing a color value
-  token_comma,   // Token representing a comma (e.g., separating values)
-  token_space,   // Token representing spaces between values
-  token_newline, // Token representing a newline
-  token_eof,     // Token representing end-of-file
-  token_invalid, // Token representing an invalid input
-  token_count    // Total number of token types
+  token_height,  // Token que representa un valor de altura
+  token_color,   // Token que representa un valor de color
+  token_comma,   // Token que representa una coma (e.g., separa valores)
+  token_space,   // Token que representa espacios entre valores
+  token_newline, // Token que representa un salto de línea
+  token_eof,     // Token que representa el final del archivo
+  token_invalid, // Token que representa una entrada inválida
+  token_count    // Número total de tipos de tokens
 };
 
 // Forward declaration of the map structure
@@ -30,8 +29,8 @@ typedef struct s_map t_map;
 
 // Transition structure for the automaton
 struct s_automaton {
-  void (*action)(char *, t_map *, int,
-                 int);     // Pointer to function for token actions
+  int (*action)(char **, t_map *, int,
+                int *);    // Pointer to function for token actions
   enum e_state next_state; // The next state after the action
 };
 

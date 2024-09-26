@@ -15,13 +15,13 @@
 
 // Prototipos de funciones para el archivo fdf.h
 // actions.c
-void handle_height(char *token, t_map *map, int row, int col);
-void handle_color(char *token, t_map *map, int row, int col);
-void handle_space(char *token, t_map *map, int row, int col);
-void handle_newline(char *token, t_map *map, int row, int col);
-void handle_eof(char *token, t_map *map, int row, int col);
-void handle_error(char *token, t_map *map, int row, int col);
-void handle_comma(char *token, t_map *map, int row, int col);
+int handle_height(char **line, t_map *map, int row, int *col);
+int handle_color(char **line, t_map *map, int row, int *col);
+int handle_space(char **line, t_map *map, int row, int *col);
+int handle_newline(char **line, t_map *map, int row, int *col);
+int handle_eof(char **line, t_map *map, int row, int *col);
+int handle_error(char **line, t_map *map, int row, int *col);
+int handle_comma(char **line, t_map *map, int row, int *col);
 
 // automaton.c
 t_automaton **assign_automaton();
@@ -38,10 +38,9 @@ int handle_keypress(int keycode, t_fdf *fdf);
 int close_window(t_fdf *fdf);
 void render_map(t_fdf *fdf);
 
-// parser.c
+// parser.ca
 int count_columns(char *line);
 int determine_token_type(const char *token);
-int parse_map(int fd, t_map *map);
-void parser(t_map *map, char *map_file);
+int parser(t_map *map, char *map_file);
 
 #endif // FDF_H
