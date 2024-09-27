@@ -23,39 +23,62 @@ int count_columns(char *line) {
   return count;
 }
 
-// Función para determinar el tipo de token
-int determine_token_type(const char *token) {
-  // TODO mergear los 2 primeros ifs para dar token value
-  if (ft_isdigit(token[0]) || (token[0] == '-' && ft_isdigit(token[1]))) {
-    return token_height; // Cambiado de TOKEN_HEIGHT a token_height
+// Función para determinar el tipo de token basado en el estado y la línea
+int determine_token_type(const char *line, int state) {
+
+  // Determinar si es un token_height (primer carácter es dígito o '-' seguido
+  // de dígito)
+  if (((line[0] >= '0' && line[0] <= '9') || (line[0] == '-')) &&
+      (state == state_start || state == state_expect_value)) {
+    return token_height;
   }
-  if (strncmp(token, "0x", 2) == 0 && strlen(token) == 8) {
-    return token_color; // Cambiado de TOKEN_COLOR a token_color
+
+  // Determinar si es un token_color (valor hexadecimal) y si el estado anterior
+  // era expect_separator
+  else if (ft_strncmp(line, "0x", 2) == 0) {
+    return token_color;
   }
-  if (strcmp(token, "\n") == 0) {
-    return token_newline; // Cambiado de TOKEN_NEWLINE a token_newline
+
+  // Determinar si es un token_comma y el estado anterior era expect_value
+  else if (line[0] == ',' && state == state_expect_value) {
+    return token_comma;
   }
-  if (strcmp(token, " ") == 0) {
-    return token_space; // Cambiado de TOKEN_SPACE a token_space
+
+  // Determinar si es un token_space y el estado anterior era expect_separator
+  else if (line[0] == ' ' && state == state_expect_separator) {
+    return token_space;
   }
-  return token_invalid; // Cambiado de TOKEN_INVALID a token_invalid
+
+  // Determinar si es un token_newline y el estado anterior era expect_separator
+  else if (line[0] == '\n' && state == state_expect_separator) {
+    return token_newline;
+  }
+
+  // Si ninguna de las condiciones anteriores se cumple, es un token_invalid
+  return token_invalid;
 }
 
-int process_tokens(char *line, t_map *map, int row,
+int process_tokens(t_map *map, int fd, t_dim dim,
                    t_automaton **state_automaton) {
   int state = state_start;
-  int j = 0;
+  t_automaton current_automaton;
+  char *line = NULL;
+  int token_type;
 
-  while (line != NULL) {
-    int token_type = determine_token_type(line);
-    t_automaton current_automaton = state_automaton[state][token_type];
+  token_type = token_newline;
+  while (state != state_end || state != state_invalid) {
+    current_automaton = state_automaton[state][token_type];
 
     if (current_automaton.action &&
-        !current_automaton.action(&line, map, row, &j)) {
+        !current_automaton.action(&line, map, &dim, fd))
       return -1;
-    }
 
     state = current_automaton.next_state;
+    if (state == state_end)
+      break;
+    if (state == state_invalid)
+      return -1;
+    token_type = determine_token_type(line, state);
   }
   return 0;
 }
@@ -67,27 +90,20 @@ int process_tokens(char *line, t_map *map, int row,
 //(4) !! alocar memoria para map->colum
 //(5) llenar map->coors con los tokens
 int parser(t_map *map, char *map_file) {
-  char *line;
   int fd;
-  int row = -1;
+  t_dim dim;
 
   fd = open(map_file, O_RDONLY);
   if (fd == -1)
     return -1;
 
+  dim.rows = -1;
   t_automaton **state_automaton = assign_automaton();
   while (1) {
-    line = get_next_line(fd);
-    if (!line)
-      break;
-    int columns = count_columns(line);
-    if (init_row_memory(map, ++row, columns) == -1)
-      return (free(line), close(fd), free(map), 1);
-    map->columns[row] = columns;
-    if (process_tokens(line, map, row, state_automaton))
-      return (free(line), /*liberar todo el mapa*/ -1);
-    free(line);
+    if (process_tokens(map, fd, dim, state_automaton) == -1)
+      return (free(map), close(fd),
+              /* TODO liberar todo el mapa*/ -1);
   }
-  map->rows = row;
-  return close(fd), free(map), 0;
+  map->dim = dim;
+  return (close(fd), 0);
 }

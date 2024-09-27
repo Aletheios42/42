@@ -15,7 +15,8 @@ int main(int ac, char **av) {
     return (1);
   }
 
-  parser(fdf->map, av[1]);
+  if (parser(fdf->map, av[1]) == -1)
+    return (free(fdf), 1);
   // Renderizamos el mapa
   render_map(fdf);
 

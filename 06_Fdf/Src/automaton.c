@@ -26,10 +26,11 @@ t_automaton **assign_automaton() {
        {handle_error, state_invalid}, // token_color
        {handle_comma,
         state_expect_value}, // token_comma (válido, transitar a expect_value)
-       {handle_space, state_expect_separator}, // token_space (pasar espacio y
-       // permanecer en expect_separator)
+       {handle_space,
+        state_expect_value}, // token_space (pasar espacio y permanecer en
+                             // expect_separator)
        {handle_newline,
-        state_expect_value}, // token_newline (válido, transitar a expect_value)
+        state_start}, // token_newline (válido, transitar a expect_value)
        {handle_eof, state_end},        // token_eof (fin de archivo)
        {handle_error, state_invalid}}, // token_invalid
 
@@ -55,7 +56,6 @@ t_automaton **assign_automaton() {
   // Retornar un puntero a la tabla de estados
   return (t_automaton **)state_automaton_table;
 }
-
 t_automaton **new_automaton() {
   // Reservar memoria para el autómata
   t_automaton **automaton_instance =

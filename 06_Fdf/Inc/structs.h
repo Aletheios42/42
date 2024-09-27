@@ -15,8 +15,8 @@ enum e_state {
 // Enumeración de los posibles tokens que puede procesar el autómata
 enum e_token {
   token_height,  // Token que representa un valor de altura
-  token_color,   // Token que representa un valor de color
   token_comma,   // Token que representa una coma (e.g., separa valores)
+  token_color,   // Token que representa un valor de color
   token_space,   // Token que representa espacios entre valores
   token_newline, // Token que representa un salto de línea
   token_eof,     // Token que representa el final del archivo
@@ -27,23 +27,29 @@ enum e_token {
 // Forward declaration of the map structure
 typedef struct s_map t_map;
 
+// Forward declaration of the map structure
+typedef struct s_dim t_dim;
 // Transition structure for the automaton
 struct s_automaton {
-  int (*action)(char **, t_map *, int,
-                int *);    // Pointer to function for token actions
+  int (*action)(char **, t_map *, t_dim *,
+                int);      // Pointer to function for token actions
   enum e_state next_state; // The next state after the action
 };
 
 // Typedef for easier use of s_automaton structure
 typedef struct s_automaton t_automaton;
 
+struct s_dim {
+  int *cols; // Array of column counts per row
+  int rows;  // Total number of rows
+};
+
 // Map structure definition
 struct s_map {
-  int ***map;   // 3D array storing the map data
-  int *columns; // Array of column counts per row
-  int rows;     // Total number of rows
-  int max_z;    // Maximum Z value (height)
-  int min_z;    // Minimum Z value (height)
+  int ***map; // 3D array storing the map data
+  s_dim dim;
+  int max_z; // Maximum Z value (height)
+  int min_z; // Minimum Z value (height)
 };
 
 // Structure representing a point in 3D space

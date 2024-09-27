@@ -1,66 +1,136 @@
 
 #include "../Inc/fdf.h"
 
-// Function to handle height (receives a token, a map, and the row and column)
-int handle_height(char *token, t_map *map, int row, int *col) {
-  printf("Handling height at row: %d, col: %d...\n", row, *col);
-  (void)token;
-  (void)map;
-  (void)row;
-  (void)col;
+int handle_height(char **line, t_map *map, t_dim *dim, int fd) {
+  int result;
+  char *endptr;
+
+  // Convertimos el contenido de *line a un entero, detectando cualquier error.
+  result = strtol(*line, &endptr, 10); // Usa strtol para manejar errores
+  if (*line == endptr) {
+    printf("Error: no se pudo convertir la cadena a número en la posición col: "
+           "%d\n",
+           dim->cols[dim->rows]);
+    return -1;
+  }
+
+  // Guardamos el resultado en map->map[row][col]
+  map->map[dim->rows][dim->cols[dim->rows]][0] = result;
+
+  // Movemos el puntero de *line hasta el final del número convertido
+  *line = endptr;
+
+  // Incrementamos la columna
+  dim->cols[dim->rows]++;
+
+  printf("Altura procesada: %d en la posición row: %d, col: %d\n", result,
+         dim->rows, dim->cols[dim->rows]);
+
+  return 0; // Retorna 0 para indicar éxito
 }
 
-// Function to handle color (receives a token, a map, and the row and column)
-int handle_color(char *token, t_map *map, int row, int *col) {
-  printf("Handling color at row: %d, col: %d...\n", row, *col);
-  (void)token;
-  (void)map;
-  (void)row;
-  (void)col;
+int handle_color(char **line, t_map *map, t_dim *dim, int fd) {
+  int result;
+  char *endptr;
+
+  // Convertimos el contenido de *line a un entero, especificando base 16
+  result = strtol(*line, &endptr, 16);
+  if (*line == endptr) {
+    printf("Error: no se pudo convertir la cadena hexadecimal a número en la "
+           "posición col: %d\n",
+           dim->cols[dim->rows]);
+    return -1;
+  }
+
+  // Guardamos el resultado en map->map[row][col]
+  map->map[dim->rows][dim->cols[dim->rows]][1] = result;
+
+  // Movemos el puntero de *line hasta el final del número convertido
+  *line = endptr;
+
+  // Incrementamos la columna
+  dim->cols[dim->rows]++;
+
+  printf("Color procesado: %#x en la posición row: %d, col: %d\n", result,
+         dim->rows, dim->cols[dim->rows]);
+
+  return 0; // Retorna 0 para indicar éxito
 }
 
-// Function to handle space (receives token, map, row, and col, but does nothing
-// specific here)
-int handle_space(char *token, t_map *map, int row, int *col) {
-  printf("Handling space at row: %d, col: %d...\n", row, *col);
-  (void)token;
+int handle_space(char **line, t_map *map, t_dim *dim, int fd) {
+  // Iteramos sobre la cadena hasta que no haya más espacios
+  while (**line == ' ' || **line == '\t') {
+    (*line)++; // Movemos el puntero para saltar los espacios
+  }
+
   (void)map;
-  (void)row;
-  (void)col;
+  (void)dim;
+  (void)fd;
+
+  printf("Espacios saltados. Nueva posición del puntero: '%c'\n", **line);
+
+  return 0; // Retorna 0 para indicar éxito
 }
 
-// Function to handle newline
-int handle_newline(char *token, t_map *map, int row, int *col) {
-  printf("Handling newline at row: %d, col: %d...\n", row, *col);
-  (void)token;
-  (void)map;
-  (void)row;
-  (void)col;
+int handle_newline(char **line, t_map *map, t_dim *dim, int fd) {
+  printf("Handling new*line at row: %d, col: %d...\n", dim->rows,
+         dim->cols[dim->rows]);
+
+  // Leer nueva línea
+  *line = get_next_line(fd);
+  if (!*line) {
+    return -1; // Error al leer
+  }
+
+  // Contar columnas de la nueva línea
+  int columns = count_columns(*line);
+
+  // Incrementar fila y ajustar la memoria del mapa
+  dim->rows++;
+  if (init_row_memory(map, dim->rows, columns) == -1) {
+    return (free(*line), close(fd), free(map), -1);
+  }
+
+  map->dim.cols[dim->rows] = columns; // Guardamos el número de columnas
+
+  return 0; // Retorna 0 para indicar éxito
 }
 
-// Function to handle end of file
-int handle_eof(char *token, t_map *map, int row, int *col) {
+int handle_eof(char **line, t_map *map, t_dim *dim, int fd) {
   printf("Handling end of file...\n");
-  (void)token;
+
+  // Limpiamos y cerramos
+  (void)*line;
   (void)map;
-  (void)row;
-  (void)col;
+  (void)dim;
+  close(fd);
+
+  return 0; // Retorna 0 para indicar éxito
 }
 
-// Function to handle errors
-int handle_error(char *token, t_map *map, int row, int *col) {
-  printf("Handling error at row: %d, col: %d...\n", row, *col);
-  (void)token;
+int handle_error(char **line, t_map *map, t_dim *dim, int fd) {
+  printf("Handling error at row: %d, col: %d...\n", dim->rows,
+         dim->cols[dim->rows]);
+
+  (void)*line;
   (void)map;
-  (void)row;
-  (void)col;
+  (void)dim;
+  close(fd);
+
+  return -1; // Retorna -1 para indicar error
 }
 
-// Function to handle commas (if used in the input)
-int handle_comma(char *token, t_map *map, int row, int *col) {
-  printf("Handling comma at row: %d, col: %d...\n", row, *col);
-  (void)token;
+int handle_comma(char **line, t_map *map, t_dim *dim, int fd) {
+  printf("Handling comma at row: %d, col: %d...\n", dim->rows,
+         dim->cols[dim->rows]);
+
+  // Movemos el puntero después de la coma
+  if (**line == ',') {
+    (*line)++;
+  }
+
   (void)map;
-  (void)row;
-  (void)col;
+  (void)fd;
+
+  return 0; // Retorna 0 para indicar éxito
 }
