@@ -3,10 +3,8 @@
 
 // Enumeración de los posibles estados en el autómata
 enum e_state {
-  state_start,            // Estado inicial
   state_expect_value,     // Estado esperando un valor (height o color)
-  state_expect_separator, // Estado esperando un separador (coma, espacio, o
-                          // nueva línea)
+  state_expect_separator, // Estado esperando un separador (coma, espacio, o nl)
   state_end,              // Estado final
   state_invalid,          // Estado para manejar entradas inválidas
   state_count             // Número total de estados
@@ -31,9 +29,8 @@ typedef struct s_map t_map;
 typedef struct s_dim t_dim;
 // Transition structure for the automaton
 struct s_automaton {
-  int (*action)(char **, t_map *, t_dim *,
-                int);      // Pointer to function for token actions
-  enum e_state next_state; // The next state after the action
+  int (*action)(char **, t_map *, int); // Pointer to function for token actions
+  enum e_state next_state;              // The next state after the action
 };
 
 // Typedef for easier use of s_automaton structure
@@ -47,7 +44,7 @@ struct s_dim {
 // Map structure definition
 struct s_map {
   int ***map; // 3D array storing the map data
-  s_dim dim;
+  t_dim dim;
   int max_z; // Maximum Z value (height)
   int min_z; // Minimum Z value (height)
 };

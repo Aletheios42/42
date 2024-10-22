@@ -17,25 +17,28 @@ t_fdf *init_fdf(void) {
   return fdf; // Retorna la estructura inicializada
 }
 // Función que asigna (o reasigna) memoria para una fila específica en el mapa
-int init_row_memory(t_map *map, int row, int columns) {
+int init_row_memory(t_map *map) {
   int j;
 
-  map->map = (int ***)realloc(map->map, sizeof(int **) * map->rows + 1);
+  map->map = (int ***)realloc(map->map, sizeof(int **) * map->dim.rows + 1);
   if (!map->map)
     return -1;
 
-  map->columns = (int *)realloc(map->columns, sizeof(int) * map->rows + 1);
-  if (!map->columns)
+  map->dim.cols =
+      (int *)realloc(map->dim.cols, sizeof(int) * map->dim.rows + 1);
+  if (!map->dim.cols)
     return -1;
 
-  map->map[row] = (int **)realloc(map->map[row], sizeof(int *) * columns);
-  if (!map->map[row])
+  map->map[map->dim.rows] = (int **)realloc(
+      map->map[map->dim.rows], sizeof(int *) * map->dim.cols[map->dim.rows]);
+  if (!map->map[map->dim.rows])
     return -1;
 
   j = -1;
-  while (++j < columns) {
-    map->map[row][j] = realloc(map->map[row][j], sizeof(int) * 2);
-    if (!map->map[row][j])
+  while (++j < map->dim.cols[map->dim.rows]) {
+    map->map[map->dim.rows][j] =
+        realloc(map->map[map->dim.rows][j], sizeof(int) * 2);
+    if (!map->map[map->dim.rows][j])
       return -1;
   }
   return 0;

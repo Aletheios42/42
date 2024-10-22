@@ -31,6 +31,7 @@ SRC_FILES   = main.c 				\
                automaton.c 	\
                actions.c 		\
 							 mlx.c				\
+							 utils.c			\
 
 
 SRC         = $(addprefix $(SRC_DIR), $(SRC_FILES))

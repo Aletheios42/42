@@ -1,61 +1,31 @@
 #include "../Inc/fdf.h" // Asegúrate de que este archivo contenga las definiciones necesarias.
 
-t_automaton **assign_automaton() {
-  static t_automaton state_automaton_table[state_count][token_count] = {
+// t_automaton **assign_automaton() {
+//   static t_automaton state_automaton_table[state_count][token_count] = {
+//
+//       // Estado: state_expect_value
+//       {{handle_height, state_expect_separator}, // token_height
+//        {NULL, state_invalid},                   // token_comma
+//        {handle_color, state_expect_separator},  // token_color
+//        {handle_space, state_expect_value},      // token_space
+//        {handle_newline, state_expect_value},    // token_newline
+//        {NULL, state_end},                       // token_eof
+//        {NULL, state_invalid}},                  // token_invalid
+//
+//       // Estado: state_expect_separator
+//       {{NULL, state_invalid},                // token_height
+//        {handle_comma, state_expect_value},   // token_comma
+//        {NULL, state_invalid},                // token_color
+//        {handle_space, state_expect_value},   // token_space
+//        {handle_newline, state_expect_value}, // token_newline
+//        {NULL, state_end},                    // token_eof
+//        {NULL, state_invalid}},               // token_invalid
+//   };
+//
+//   // Retornar un puntero a la tabla de estados
+//   return (t_automaton **)state_automaton_table;
+// }
 
-      // Estado: state_start
-      {{handle_height, state_expect_separator}, // token_height
-       {handle_error, state_invalid},           // token_color
-       {handle_error, state_invalid},           // token_comma
-       {handle_space, state_expect_value},      // token_space
-       {handle_newline, state_start},           // token_newline
-       {handle_eof, state_end},                 // token_eof
-       {handle_error, state_invalid}},          // token_invalid
-
-      // Estado: state_expect_value
-      {{handle_height, state_expect_separator}, // token_height
-       {handle_color, state_expect_separator},  // token_color
-       {handle_error, state_invalid},           // token_comma
-       {handle_error, state_invalid},           // token_space
-       {handle_error, state_invalid},           // token_newline
-       {handle_eof, state_end},                 // token_eof
-       {handle_error, state_invalid}},          // token_invalid
-
-      // Estado: state_expect_separator
-      {{handle_error, state_invalid}, // token_height
-       {handle_error, state_invalid}, // token_color
-       {handle_comma,
-        state_expect_value}, // token_comma (válido, transitar a expect_value)
-       {handle_space,
-        state_expect_value}, // token_space (pasar espacio y permanecer en
-                             // expect_separator)
-       {handle_newline,
-        state_start}, // token_newline (válido, transitar a expect_value)
-       {handle_eof, state_end},        // token_eof (fin de archivo)
-       {handle_error, state_invalid}}, // token_invalid
-
-      // Estado: state_end
-      {{NULL, state_end},  // token_height
-       {NULL, state_end},  // token_color
-       {NULL, state_end},  // token_comma
-       {NULL, state_end},  // token_space
-       {NULL, state_end},  // token_newline
-       {NULL, state_end},  // token_eof
-       {NULL, state_end}}, // token_invalid
-
-      // Estado: state_invalid
-      {{NULL, state_invalid}, // token_height
-       {NULL, state_invalid}, // token_color
-       {NULL, state_invalid}, // token_comma
-       {NULL, state_invalid}, // token_space
-       {NULL, state_invalid}, // token_newline
-       {NULL, state_invalid}, // token_eof
-       {NULL, state_invalid}} // token_invalid
-  };
-
-  // Retornar un puntero a la tabla de estados
-  return (t_automaton **)state_automaton_table;
-}
 t_automaton **new_automaton() {
   // Reservar memoria para el autómata
   t_automaton **automaton_instance =
