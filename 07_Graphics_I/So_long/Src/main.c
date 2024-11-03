@@ -1,8 +1,9 @@
-#include "../Inc/so_long.h" // Incluir el archivo de encabezado
+p #include "../Inc/so_long.h" // Incluir el archivo de encabezado
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(int ac, char **av) {
+    int
+    main(int ac, char **av) {
   if (ac == 2) { // Verifica que se reciban exactamente 2 argumentos
     int **data = parser(av);
     if (data != NULL) {

@@ -1,10 +1,10 @@
 #ifndef SO_LONG_H
 #define SO_LONG_H
 
-// Declaración de la función parser
+// src/parser.c
 int **parser(char **av);
 
-// Declaración de la función execute
+// src/render.c
 void render(int **data);
 
 #endif // SO_LONG_H
