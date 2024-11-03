@@ -10,7 +10,8 @@ RM = rm -rf
 
 #INCLUDES
 DIR_INCLUDES = ./Inc/
-FILES_INCLUDES = fractol.h
+FILES_INCLUDES = fractol.h	\
+								 structs.h
 INCLUDES = $(addprefix -I, $(DIR_INCLUDES))
 
 #LIBRARIES
@@ -41,7 +42,8 @@ DIR_SOURCES = ./Src/
 FILES_SOURCES = main.c 			\
                 render.c 		\
                 parser.c		\
-								mlx.c		
+								mlx.c				\
+								handler.c
 SOURCES = $(addprefix $(DIR_SOURCES), $(FILES_SOURCES))
 
 #OBJECTS
