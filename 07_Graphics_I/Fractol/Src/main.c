@@ -1,9 +1,13 @@
-#include "../Inc/fractol.h" // Incluir el archivo de encabezado
+#include "../Inc/fractol.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 int main(int ac, char **av) {
   if (ac == 2) {
+
+    t_mlx *mlx;
+
+    init_window(&mlx);
     int **data = parser(av);
     if (data != NULL) {
       render(data);

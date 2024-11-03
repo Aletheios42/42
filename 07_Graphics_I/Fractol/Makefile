@@ -38,10 +38,10 @@ LINKER += -L$(DIR_MLX) -lmlx
 
 #SOURCES
 DIR_SOURCES = ./Src/
-FILES_SOURCES = main.c \
-                render.c \
-                parser.c
-
+FILES_SOURCES = main.c 			\
+                render.c 		\
+                parser.c		\
+								mlx.c		
 SOURCES = $(addprefix $(DIR_SOURCES), $(FILES_SOURCES))
 
 #OBJECTS

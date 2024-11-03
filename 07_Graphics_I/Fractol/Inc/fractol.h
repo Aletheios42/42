@@ -12,18 +12,21 @@ typedef struct s_setting {
 
 typedef struct s_mlx {
   void *mlx;
-  void *win;
   void *img;
+  void *win;
   void *addr;
   void *bpp;
   t_setting *setting;
 } t_mlx;
 
-// src/parser.c
+// Src/parser.c
 int **parser(char **av);
 
-// src/render.c
+// Src/render.c
 void render(int **data);
 void init_mlx(t_mlx **mlx);
+
+// Src/mlx.c
+int init_window(t_mlx **mlx);
 
 #endif // FRACTOL_H
