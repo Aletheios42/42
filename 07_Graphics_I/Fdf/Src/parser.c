@@ -1,5 +1,6 @@
 #include "../Inc/fdf.h" // Asegúrate de que este archivo contenga las definiciones necesarias.
 
+// hay un problema con el casteo. ahora esta bien
 t_automaton **assign_automaton() {
   static t_automaton state_automaton_table[state_count][token_count] = {
       // Estado: state_expect_value
@@ -20,7 +21,11 @@ t_automaton **assign_automaton() {
        {NULL, state_end},                    // token_eof
        {NULL, state_invalid}},               // token_invalid
   };
-  return (t_automaton **)state_automaton_table;
+  static t_automaton *table[] = {
+      state_automaton_table[0],
+      state_automaton_table[1],
+  };
+  return table;
 }
 
 // Función para determinar el tipo de token basado en el estado y la línea
