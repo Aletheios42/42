@@ -94,6 +94,13 @@ fclean: clean
 	@make clean -sC $(MLX_PATH)
 	@printf "$(GR)All libraries removed!$(RC)\n\n"
 
+test: $(BINARY) 
+	./fdf test_maps/mars.fdf
+
+debug: $(BINARY)
+	@echo "Iniciando lldb para el binario $(BINARY)..."
+	lldb -- $(BINARY) test_maps/mars.fdf
+
 print:
 	@printf $(SRC)
 

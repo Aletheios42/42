@@ -3,23 +3,23 @@
 
 // Enumeración de los posibles estados en el autómata
 enum e_state {
-  state_expect_value,     // Estado esperando un valor (height o color)
-  state_expect_separator, // Estado esperando un separador (coma, espacio, o nl)
-  state_end,              // Estado final
-  state_invalid,          // Estado para manejar entradas inválidas
-  state_count             // Número total de estados
+  state_expect_value,     // 0 Estado valor (height o color)
+  state_expect_separator, // 1 Estado separador (coma, espacio, nl)
+  state_end,              // 2 Estado final
+  state_invalid,          // 3 Estado para manejar entradas inválidas
+  state_count             // 4 Número total de estados
 };
 
 // Enumeración de los posibles tokens que puede procesar el autómata
 enum e_token {
-  token_height,  // Token que representa un valor de altura
-  token_comma,   // Token que representa una coma (e.g., separa valores)
-  token_color,   // Token que representa un valor de color
-  token_space,   // Token que representa espacios entre valores
-  token_newline, // Token que representa un salto de línea
-  token_eof,     // Token que representa el final del archivo
-  token_invalid, // Token que representa una entrada inválida
-  token_count    // Número total de tipos de tokens
+  token_height,  // 0 Token que representa un valor de altura
+  token_comma,   // 1 Token que representa una coma (e.g., separa valores)
+  token_color,   // 2 Token que representa un valor de color
+  token_space,   // 3 Token que representa espacios entre valores
+  token_newline, // 4 Token que representa un salto de línea
+  token_eof,     // 5 Token que representa el final del archivo
+  token_invalid, // 6 Token que representa una entrada inválida
+  token_count    // 7 Número total de tipos de tokens
 };
 
 // Forward declaration of the map structure
@@ -47,17 +47,13 @@ int handle_space(char **line, t_map **map, int fd);
 int handle_comma(char **line, t_map **map, int fd);
 int handle_newline(char **line, t_map **map, int fd);
 
-struct s_dim {
-  int *cols; // Array of column counts per row
-  int rows;  // Total number of rows
-};
-
 // Map structure definition
 struct s_map {
   int ***map; // 3D array storing the map data
-  t_dim dim;
-  int max_z; // Maximum Z value (height)
-  int min_z; // Minimum Z value (height)
+  int *cols;  // Array of column counts per row
+  int rows;   // Total number of rows
+  int max_z;  // Maximum Z value (height)
+  int min_z;  // Minimum Z value (height)
 };
 
 // Structure representing a point in 3D space

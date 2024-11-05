@@ -1,6 +1,6 @@
 #include "../Inc/fdf.h" // Asegúrate de que este archivo contenga las definiciones necesarias.
 
-// hay un problema con el casteo. ahora esta bien
+// hay un problema con el casteo.
 t_automaton **assign_automaton() {
   static t_automaton state_automaton_table[state_count][token_count] = {
       // Estado: state_expect_value
@@ -73,7 +73,7 @@ int parser(t_map **map, char *map_file) {
   int fd;
   char *line = NULL;
   int state;
-  int token_type;
+  int token;
   t_automaton current_automaton;
   t_automaton **state_automaton = assign_automaton();
 
@@ -81,13 +81,14 @@ int parser(t_map **map, char *map_file) {
   if (fd == -1)
     return -1;
 
-  (*map)->dim.rows = -1;
+  (*map)->rows = -1;
 
   state = state_expect_value;
-  token_type = token_newline;
+  token = token_newline;
   while (state != state_end) {
-    current_automaton = state_automaton[state][token_type];
+    current_automaton = state_automaton[state][token];
 
+    printf("state: %d  token %d \n", state, token);
     // TODO revisar los limites de este if, creo que estan cambiados
     if (current_automaton.action && !current_automaton.action(&line, map, fd))
       return (free(line), -1);
@@ -97,7 +98,7 @@ int parser(t_map **map, char *map_file) {
       break;
     if (state == state_invalid)
       return (free(line), -1);
-    token_type = determine_token_type(line, state);
+    token = determine_token_type(line, state);
   }
   return (close(fd), 0);
 }

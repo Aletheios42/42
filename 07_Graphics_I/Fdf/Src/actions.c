@@ -1,9 +1,17 @@
 #include "../Inc/fdf.h"
 
 int handle_height(char **line, t_map **map, int fd) {
-  (void)line;
-  (void)map;
   (void)fd;
+  static int x;
+  static int y;
+  static int z;
+
+  while (*(*line)) {
+    (*map)->map[x][y][z] = ft_atoi(*line);
+    while (ft_isdigit(**line))
+      (**line)++;
+  }
+  printf("map[%d[%d][%d] = %d  ", x, y, z, (*map)->map[x][y][z]);
   printf("Ejecutando: handle_height\n");
   return 0;
 }
@@ -25,9 +33,10 @@ int handle_space(char **line, t_map **map, int fd) {
 }
 
 int handle_newline(char **line, t_map **map, int fd) {
-  (void)line;
-  (void)map;
-  (void)fd;
+  *line = get_next_line(fd);
+  (*map)->rows++;
+  // ajustar el Int *cols
+  printf("row: %d\n", (*map)->rows++);
   printf("Ejecutando: handle_newline\n");
   return 0;
 }

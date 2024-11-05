@@ -14,32 +14,53 @@ t_fdf *init_fdf(void) {
     return NULL;
   }
 
+  // Inicializa el resto de los miembros del mapa, si es necesario
+  fdf->map->map = NULL;  // Inicializa el puntero del mapa
+  fdf->map->cols = NULL; // Inicializa el arreglo de columnas
+  fdf->map->rows = 0;    // Inicializa el número de filas
+  fdf->map->max_z = 0;   // Inicializa el valor máximo de Z
+  fdf->map->min_z = 0;   // Inicializa el valor mínimo de Z
+
   return fdf; // Retorna la estructura inicializada
 }
+
 // Función que asigna (o reasigna) memoria para una fila específica en el mapa
 int init_row_memory(t_map *map) {
   int j;
 
-  map->map = (int ***)realloc(map->map, sizeof(int **) * map->dim.rows + 1);
-  if (!map->map)
-    return -1;
-
-  map->dim.cols =
-      (int *)realloc(map->dim.cols, sizeof(int) * map->dim.rows + 1);
-  if (!map->dim.cols)
-    return -1;
-
-  map->map[map->dim.rows] = (int **)realloc(
-      map->map[map->dim.rows], sizeof(int *) * map->dim.cols[map->dim.rows]);
-  if (!map->map[map->dim.rows])
-    return -1;
-
-  j = -1;
-  while (++j < map->dim.cols[map->dim.rows]) {
-    map->map[map->dim.rows][j] =
-        realloc(map->map[map->dim.rows][j], sizeof(int) * 2);
-    if (!map->map[map->dim.rows][j])
-      return -1;
+  // Aumenta la memoria para las filas
+  int ***temp_map =
+      (int ***)realloc(map->map, sizeof(int **) * (map->rows + 1));
+  if (!temp_map) {
+    return -1; // Manejo de error si realloc falla
   }
-  return 0;
+  map->map = temp_map;
+
+  // Aumenta la memoria para las columnas
+  int *temp_cols = realloc(map->cols, sizeof(int) * (map->rows + 1));
+  if (!temp_cols) {
+    return -1; // Manejo de error si realloc falla
+  }
+  map->cols = temp_cols;
+
+  // Aumenta la memoria para la nueva fila
+  map->map[map->rows] = malloc(sizeof(int *) * map->cols[map->rows]);
+  if (!map->map[map->rows]) {
+    return -1; // Manejo de error si malloc falla
+  }
+
+  // Inicializa la nueva fila
+  for (j = 0; j < map->cols[map->rows]; j++) {
+    map->map[map->rows][j] =
+        malloc(sizeof(int) * 2); // Ajustar según el tamaño que necesites
+    if (!map->map[map->rows][j]) {
+      return -1; // Manejo de error si malloc falla
+    }
+  }
+
+  // Aumentar el número total de filas
+  map->rows++;
+
+  return 0; // Retorna 0 en caso de éxito
 }
+
