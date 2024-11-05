@@ -1,21 +1,16 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
-typedef struct s_setting {
-  char *title;
-  int width;
-  int height;
-} t_setting;
+#include <stdint.h>
 
 typedef struct s_mlx {
   void *mlx;
-  void *img;
   void *win;
+  void *img;
   void *addr;
   int bpp;
   int lpl;
   int endian;
-  t_setting *setting;
 } t_mlx;
 
 typedef struct s_trgb {

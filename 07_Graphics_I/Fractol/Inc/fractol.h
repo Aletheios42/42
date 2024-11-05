@@ -3,9 +3,9 @@
 
 // LIBRARIES
 #include "../Inc/structs.h"
+#include "../Libft/libft.h"
 #include "../minilibx_linux/mlx.h"
 #include "../minilibx_macos/mlx.h"
-
 // DEFINES
 #define WIDTH 800
 #define HEIGHT 1200

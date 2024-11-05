@@ -2,6 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int check_fractal(int ac, char **av) {
+  if (ac == 2 && !ft_strncmp(av[1], "Mandelbrot", 10) && ft_strlen(av[1]) == 10)
+    return 0;
+  else
+    return 1;
+}
 int **parser(char **av) {
   printf("Parser called with arguments: %s, \n", av[1]);
 

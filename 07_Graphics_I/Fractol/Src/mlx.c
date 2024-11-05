@@ -3,25 +3,21 @@
 #include <stdlib.h>
 
 int init_window(t_mlx *mlx) {
-
-  t_setting setting;
-
-  setting.width = HEIGHT;
-  setting.height = WIDTH;
-  setting.title = TITLE;
-  mlx->setting = &setting;
-
   mlx->img = NULL;
   mlx->addr = NULL;
   mlx->bpp = 0;
   mlx->lpl = 0;
   mlx->endian = 0;
   mlx->mlx = mlx_init();
-  mlx->win = mlx_new_window(mlx->mlx, mlx->setting->width, mlx->setting->height,
-                            mlx->setting->title);
+  mlx->win = mlx_new_window(mlx->mlx, WIDTH, HEIGHT, TITLE);
   return 0;
 }
+void ft_mlx_pixel_put(t_mlx *mlx, int x, int y, int color) {
+  char *dst;
 
+  dst = mlx->addr + (y * mlx->lpl + x * (mlx->bpp / 8));
+  *(unsigned int *)dst = color;
+}
 // mlx->mlx = mlx_init();
 // if (!mlx->mlx) {
 //   free(mlx);
