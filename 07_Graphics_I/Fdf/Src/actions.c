@@ -44,58 +44,19 @@ int handle_space(char **line, t_map *map, int fd) {
   return 0;
 }
 
-// int handle_newline(char **line, t_map **map, int fd) {
-//   int *col;
-//   int ***coors;
-//   int i;
-//
-//   *line = get_next_line(fd);
-//   if (*line) {
-//     // Incrementa el número de filas
-//     (*map)->rows++;
-//
-//     // Realiza realloc de cols
-//     col = (int *)malloc(sizeof(int) * (*map)->rows);
-//     if (!col)
-//       return (printf("FALLO MALLOC\n"), -1);
-//
-//     // Copia los elementos existentes en cols y agrega el nuevo
-//     i = -1;
-//     while (++i < (*map)->rows - 1)
-//       col[i] = (*map)->cols[i];
-//     col[i] = ft_segcount(*line, ' '); // Asigna el nuevo valor al final
-//     free((*map)->cols);
-//     (*map)->cols = col;
-//
-//     // Ajusta el tamaño de coors para incluir un puntero más
-//     coors = (int ***)malloc(sizeof(int **) * (*map)->rows);
-//     if (!coors)
-//       return (printf("FALLO MALLOC\n"), -1);
-//
-//     // Copia los punteros existentes en coors y deja espacio para el nuevo
-//     i = -1;
-//     while (++i < (*map)->rows - 1)
-//       coors[i] = (*map)->coors[i];
-//
-//     // Deja espacio para el nuevo puntero en coors
-//     coors[i] =
-//         NULL; // Aquí puedes inicializar con NULL o el valor que necesites
-//
-//     // Libera la memoria antigua y asigna la nueva a (*map)->coors
-//     free((*map)->coors);
-//     (*map)->coors = coors;
-//   }
-//
-//   printf("row: %d\n", (*map)->rows);
-//   print_int_array(col, (*map)->rows);
-//   printf("Ejecutando: handle_newline\n");
-//   return 0;
-// }
-
 int handle_newline(char **line, t_map *map, int fd) {
-  (void)line;
   (void)map;
-  (void)fd;
+
+  int x;
+  int y;
+
+  *line = get_next_line(fd);
+  if (!*line)
+    return -1;
+
+  x = 0;
+  y = 0;
+  x = x + y;
   printf("Ejecutando: handle_newline\n");
   return 0;
 }

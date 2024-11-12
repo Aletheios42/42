@@ -59,6 +59,8 @@ int determine_token_type(const char *line, int state) {
     return token_newline;
   }
 
+  else if (line[0] == '\0')
+    return token_eof;
   // Si ninguna de las condiciones anteriores se cumple, es un token_invalid
   return token_invalid;
 }

@@ -1,19 +1,23 @@
-p #include "../Inc/so_long.h" // Incluir el archivo de encabezado
+#include "../Inc/so_long.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-    int
-    main(int ac, char **av) {
-  if (ac == 2) { // Verifica que se reciban exactamente 2 argumentos
-    int **data = parser(av);
-    if (data != NULL) {
-      render(data);
-      // Aquí se debería liberar la memoria, pero por simplicidad no lo haremos
-    } else {
-      printf("Error en el parser.\n");
-    }
-  } else {
-    printf("Uso: %s <arg1> n", av[0]);
+void ft_error(char *msg) {
+  ft_putstr_fd(msg, 2);
+  exit(0);
+}
+int main(int ac, char **av) {
+  if (ac == 2) {
+
+    t_mlx mlx;
+    char **map;
+
+    if (av_checker(av[1], &map))
+      return (ft_error("Invalid map"), 1);
+    parser(av);
+    init_window(&mlx);
+    // render();
+    mlx_loop(mlx.mlx);
   }
   return 0;
 }

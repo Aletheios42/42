@@ -2,19 +2,17 @@
 
 int main(int ac, char **av) {
   // t_fdf fdf;
+  t_mlx mlx;
+  t_map map;
+  t_cam camera;
 
   if (ac != 2)
     return (ft_putstr_fd("Usage: ./fdf <map_file.fdf>\n", 2), 1);
 
-  t_map map;
-
   if (parser(&map, av[1]) == -1)
     return (1);
 
-  t_cam camera;
   init_camera(&camera);
-
-  t_mlx mlx;
   init_window(&mlx);
 
   render(&map, &camera, &mlx);

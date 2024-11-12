@@ -35,6 +35,7 @@ SRC =	ft_isalpha.c		\
 	ft_free_matrix.c	\
 	ft_atoi.c		\
 	ft_calloc.c		\
+	ft_realloc.c	\
 	ft_strdup.c		\
 	ft_substr.c		\
 	ft_strjoin.c		\

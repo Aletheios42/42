@@ -1,4 +1,4 @@
-#include "../Inc/fractol.h" // Incluir el archivo de encabezado
+#include "../Inc/fractol.h"
 #include <stdio.h>
 #include <stdlib.h>
 

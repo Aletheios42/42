@@ -25,8 +25,6 @@ enum e_token {
 // Forward declaration of the map structure
 typedef struct s_map t_map;
 
-// Forward declaration of the map structure
-typedef struct s_dim t_dim;
 // Transition structure for the automaton
 struct s_automaton {
   int (*action)(char **, t_map *,
@@ -62,8 +60,13 @@ typedef struct s_cam {
 } t_cam;
 
 typedef struct s_mlx {
-  void *mlx; // Pointer to MLX instance
-  void *win; // Pointer to the window
+  void *mlx;
+  void *win;
+  void *img;
+  void *addr;
+  int bpp;
+  int lpl;
+  int endian;
 } t_mlx;
 
 // Main FDF structure representing the entire program state

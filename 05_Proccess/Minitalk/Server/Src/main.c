@@ -10,11 +10,10 @@ int ft_error(char *msg_error) {
  * descodificarlo
  */
 
-int server_handler() {
+void handle() {
   printf("Estoy ejecutando handler en el server\n");
   if (0)
     ft_error("Fallo en el handler en el server\n");
-  return 0;
 }
 
 /*
@@ -26,13 +25,16 @@ int server_handler() {
 int main(int ac, char **av) {
   pid_t server_pid;
 
-  server_pid = getpid();
-  printf("Estoy ejecutando el server %d\n", server_pid);
+  if (ac == 3) {
+    server_pid = getpid();
+    printf("Estoy ejecutando el server %d\n", server_pid);
 
-  // TODO utilizar s_sigaction para llamar al handler al recibir una señal
-  while (1) {
-    pause();
-    server_handler();
-  }
+    signal(SIGUSR1, handle);
+    signal(SIGUSR2, handle);
+
+    while (1) {
+    }
+  } else
+    printf("Bad Input\n");
   return 0;
 }
