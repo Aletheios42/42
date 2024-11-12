@@ -1,22 +1,32 @@
 #include "../Inc/fdf.h"
-
-int handle_height(char **line, t_map **map, int fd) {
+/*
+ * @notice:
+ * @params:
+ * @return:
+ * @bug_log: da segfault
+ */
+int handle_height(char **line, t_map *map, int fd) {
   (void)fd;
-  static int x;
-  static int y;
-  static int z;
+  (void)line;
+  (void)map;
+  // static int x;
+  // static int y;
+  // static int z;
 
-  while (*(*line)) {
-    (*map)->map[x][y][z] = ft_atoi(*line);
-    while (ft_isdigit(**line))
-      (**line)++;
-  }
-  printf("map[%d[%d][%d] = %d  ", x, y, z, (*map)->map[x][y][z]);
+  // este while da segfault bro..
+  // mirar, que probablemente tenga que mallocquear coors[x] y
+  //(*coors)->col[row] en acction new_line
+  // while (*(*line)) {
+  //   (*coors)->coors[x][y][z] = ft_atoi(*line);
+  //   while (ft_isdigit(**line))
+  //     (**line)++;
+  // }
+  // printf("coors[%d[%d][%d] = %d  ", x, y, z, (*map)->coors[x][y][z]);
   printf("Ejecutando: handle_height\n");
   return 0;
 }
 
-int handle_color(char **line, t_map **map, int fd) {
+int handle_color(char **line, t_map *map, int fd) {
   (void)line;
   (void)map;
   (void)fd;
@@ -24,24 +34,73 @@ int handle_color(char **line, t_map **map, int fd) {
   return 0;
 }
 
-int handle_space(char **line, t_map **map, int fd) {
-  (void)line;
+int handle_space(char **line, t_map *map, int fd) {
   (void)map;
   (void)fd;
+  while (ft_isspace(*(*line))) {
+    (*line)++;
+  }
   printf("Ejecutando: handle_space\n");
   return 0;
 }
 
-int handle_newline(char **line, t_map **map, int fd) {
-  *line = get_next_line(fd);
-  (*map)->rows++;
-  // ajustar el Int *cols
-  printf("row: %d\n", (*map)->rows++);
+// int handle_newline(char **line, t_map **map, int fd) {
+//   int *col;
+//   int ***coors;
+//   int i;
+//
+//   *line = get_next_line(fd);
+//   if (*line) {
+//     // Incrementa el número de filas
+//     (*map)->rows++;
+//
+//     // Realiza realloc de cols
+//     col = (int *)malloc(sizeof(int) * (*map)->rows);
+//     if (!col)
+//       return (printf("FALLO MALLOC\n"), -1);
+//
+//     // Copia los elementos existentes en cols y agrega el nuevo
+//     i = -1;
+//     while (++i < (*map)->rows - 1)
+//       col[i] = (*map)->cols[i];
+//     col[i] = ft_segcount(*line, ' '); // Asigna el nuevo valor al final
+//     free((*map)->cols);
+//     (*map)->cols = col;
+//
+//     // Ajusta el tamaño de coors para incluir un puntero más
+//     coors = (int ***)malloc(sizeof(int **) * (*map)->rows);
+//     if (!coors)
+//       return (printf("FALLO MALLOC\n"), -1);
+//
+//     // Copia los punteros existentes en coors y deja espacio para el nuevo
+//     i = -1;
+//     while (++i < (*map)->rows - 1)
+//       coors[i] = (*map)->coors[i];
+//
+//     // Deja espacio para el nuevo puntero en coors
+//     coors[i] =
+//         NULL; // Aquí puedes inicializar con NULL o el valor que necesites
+//
+//     // Libera la memoria antigua y asigna la nueva a (*map)->coors
+//     free((*map)->coors);
+//     (*map)->coors = coors;
+//   }
+//
+//   printf("row: %d\n", (*map)->rows);
+//   print_int_array(col, (*map)->rows);
+//   printf("Ejecutando: handle_newline\n");
+//   return 0;
+// }
+
+int handle_newline(char **line, t_map *map, int fd) {
+  (void)line;
+  (void)map;
+  (void)fd;
   printf("Ejecutando: handle_newline\n");
   return 0;
 }
 
-int handle_eof(char **line, t_map **map, int fd) {
+int handle_eof(char **line, t_map *map, int fd) {
   (void)line;
   (void)map;
   (void)fd;
@@ -49,7 +108,7 @@ int handle_eof(char **line, t_map **map, int fd) {
   return 0;
 }
 
-int handle_error(char **line, t_map **map, int fd) {
+int handle_error(char **line, t_map *map, int fd) {
   (void)line;
   (void)map;
   (void)fd;
@@ -57,126 +116,10 @@ int handle_error(char **line, t_map **map, int fd) {
   return 0;
 }
 
-int handle_comma(char **line, t_map **map, int fd) {
+int handle_comma(char **line, t_map *map, int fd) {
   (void)line;
   (void)map;
   (void)fd;
   printf("Ejecutando: handle_comma\n");
   return 0;
 }
-
-//
-//
-// int handle_height(char **line, t_map **map, int fd) {
-//   int result;
-//   char *endptr;
-//   (void)fd;
-//   // Convertimos el contenido de *line a un entero, detectando cualquier
-//   error. result = strtol(*line, &endptr, 10); // Usa strtol para manejar
-//   errores if (*line == endptr) {
-//     printf("Error: no se pudo convertir la cadena a número en la posición
-//     col: "
-//            "%d\n",
-//            (*map)->dim.cols[(*map)->dim.rows]);
-//     return -1;
-//   }
-//
-//   // Guardamos el resultado en map->map[row][col]
-//   (*map)->(*map)[(*map)->dim.rows][(*map)->dim.cols[(*map)->dim.rows]][0] =
-//       result;
-//
-//   // Movemos el puntero de *line hasta el final del número convertido
-//   *line = endptr;
-//
-//   // Incrementamos la columna
-//   (*map)->dim.cols[(*map)->dim.rows]++;
-//
-//   printf("Altura procesada: %d en la posición row: %d, col: %d\n", result,
-//          (*map)->dim.rows, (*map)->dim.cols[(*map)->dim.rows]);
-//
-//   return 0; // Retorna 0 para indicar éxito
-// }
-//
-// int handle_color(char **line, t_(*map) * *(*map), int fd) {
-//   int result;
-//   char *endptr;
-//   (void)fd;
-//   // Convertimos el contenido de *line a un entero, especificando base 16
-//   result = strtol(*line, &endptr, 16);
-//   if (*line == endptr) {
-//     printf("Error: no se pudo convertir la cadena hexadecimal a número en la
-//     "
-//            "posición col: %d\n",
-//            (*map)->dim.cols[(*map)->dim.rows]);
-//     return -1;
-//   }
-//
-//   // Guardamos el resultado en (*map)->(*map)[row][col]
-//   (*map)->(*map)[(*map)->dim.rows][(*map)->dim.cols[(*map)->dim.rows]][1] =
-//       result;
-//
-//   // Movemos el puntero de *line hasta el final del número convertido
-//   *line = endptr;
-//
-//   // Incrementamos la columna
-//   (*map)->dim.cols[(*map)->dim.rows]++;
-//
-//   printf("Color procesado: %#x en la posición row: %d, col: %d\n", result,
-//          (*map)->dim.rows, (*map)->dim.cols[(*map)->dim.rows]);
-//
-//   return 0; // Retorna 0 para indicar éxito
-// }
-//
-// int handle_space(char **line, t_(*map) * *(*map), int fd) {
-//   // Iteramos sobre la cadena hasta que no haya más espacios
-//   while (**line == ' ' || **line == '\t') {
-//     (*line)++; // Movemos el puntero para saltar los espacios
-//   }
-//
-//   (void)(*map);
-//   (void)fd;
-//
-//   printf("Espacios saltados. Nueva posición del puntero: '%c'\n", **line);
-//
-//   return 0; // Retorna 0 para indicar éxito
-// }
-//
-// int handle_newline(char **line, t_(*map) * *(*map), int fd) {
-//   printf("Handling new line at row: %d, col: %d...\n", (*map)->dim.rows,
-//          (*map)->dim.cols[(*map)->dim.rows]);
-//
-//   // Leer nueva línea
-//   *line = get_next_line(fd);
-//   if (!*line) {
-//     return -1; // Error al leer
-//   }
-//
-//   // Contar columnas de la nueva línea
-//   int columns = count_columns(*line);
-//
-//   // Incrementar fila y ajustar la memoria del (*map)a
-//   (*map)->dim.rows++;
-//   if (init_row_memory((*map)) == -1) {
-//     return (free(*line), close(fd), free((*map)), -1);
-//   }
-//
-//   (*map)->dim.cols[(*map)->dim.rows] =
-//       columns; // Guardamos el número de columnas
-//
-//   return 0; // Retorna 0 para indicar éxito
-// }
-//
-// int handle_comma(char **line, t_(*map) * *(*map), int fd) {
-//   printf("Handling comma at row: %d, col: %d...\n", (*map)->dim.rows,
-//          (*map)->dim.cols[(*map)->dim.rows]);
-//
-//   // Movemos el puntero después de la coma
-//   if (**line == ',') {
-//     (*line)++;
-//   }
-//
-//   (void)(*map);
-//   (void)fd;
-//
-//   return 0;
-// }

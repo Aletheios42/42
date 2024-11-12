@@ -29,7 +29,7 @@ typedef struct s_map t_map;
 typedef struct s_dim t_dim;
 // Transition structure for the automaton
 struct s_automaton {
-  int (*action)(char **, t_map **,
+  int (*action)(char **, t_map *,
                 int);      // Pointer to function for token actions
   enum e_state next_state; // The next state after the action
 };
@@ -37,52 +37,38 @@ struct s_automaton {
 // Typedef for easier use of s_automaton structure
 typedef struct s_automaton t_automaton;
 
-#include <stdio.h>
-#include <stdlib.h>
-
-// Funciones de manejo de tokens
-int handle_height(char **line, t_map **map, int fd);
-int handle_color(char **line, t_map **map, int fd);
-int handle_space(char **line, t_map **map, int fd);
-int handle_comma(char **line, t_map **map, int fd);
-int handle_newline(char **line, t_map **map, int fd);
+// Structure representing a point in 3D space
+typedef struct s_point {
+  int height; // height value associated with the point
+  int color;  // Color value associated with the point
+} t_point;
 
 // Map structure definition
 struct s_map {
-  int ***map; // 3D array storing the map data
-  int *cols;  // Array of column counts per row
-  int rows;   // Total number of rows
-  int max_z;  // Maximum Z value (height)
-  int min_z;  // Minimum Z value (height)
+  t_point **coors; // 3D array storing the map data
+  int *cols;       // Array of column counts per row
+  int rows;        // Total number of rows
+  int max_z;       // Maximum Z value (height)
+  int min_z;       // Minimum Z value (height)
 };
-
-// Structure representing a point in 3D space
-typedef struct s_point {
-  float x;   // X coordinate
-  float y;   // Y coordinate
-  float z;   // Z coordinate (height)
-  int color; // Color value associated with the point
-} t_point;
 
 // Camera settings for rendering the map
 typedef struct s_cam {
   int projection;     // Type of projection (e.g., isometric)
-  int color_pallet;   // Color pallet to use
   float scale_factor; // Scaling factor for the map
   float scale_z;      // Scaling factor for Z axis
-  float move_x;       // Horizontal movement
-  float move_y;       // Vertical movement
-  double alpha;       // Rotation around X axis
-  double beta;        // Rotation around Y axis
-  double gamma;       // Rotation around Z axis
+  float offset[2];    // movement offset
+  double angle[3];    // Rotation around axis
 } t_cam;
+
+typedef struct s_mlx {
+  void *mlx; // Pointer to MLX instance
+  void *win; // Pointer to the window
+} t_mlx;
 
 // Main FDF structure representing the entire program state
 typedef struct s_fdf {
-  void *mlx;  // Pointer to MLX instance
-  int win_x;  // Window width
-  int win_y;  // Window height
-  void *win;  // Pointer to the window
+  t_mlx *mlx; // Pointer to graphic tools
   t_cam *cam; // Pointer to camera settings
   t_map *map; // Pointer to the map data
 } t_fdf;

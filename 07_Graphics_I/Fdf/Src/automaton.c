@@ -22,7 +22,7 @@
 //   };
 //   return (t_automaton **)state_automaton_table;
 // }
-//
+
 t_automaton **new_automaton() {
   // Reservar memoria para el autómata
   t_automaton **automaton_instance =

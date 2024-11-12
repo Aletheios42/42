@@ -1,11 +1,13 @@
-NAME        = fdf
+#OUTPUT
+BINARY        = fdf
 
+# LIBRARY
 LFT_PATH    = ./Libft/
 LIBFT       = libft.a
 
 MLX_PATH    = ./minilibx_linux/
 MLX         = libmlx_Linux.a
-ifeq ($(UNAME), Darwin)
+ifeq ($(UBINARY), Darwin)
 	# mac
     FLAGS += -D MAC_OS -Iminilibx_macos
     LD += -framework OpenGL -framework AppKit -L minilibx_macos -lmlx 
@@ -18,12 +20,14 @@ else
     MINILIB_PATH = ./minilibx-linux
 endif
 
+#INCLUDES
 INC_DIR     = ./Inc/
 INC_FILES   = fdf.h \
                color.h \
                keys.h
 INC         = $(addprefix $(INC_DIR), $(INC_FILES))
 
+# SOURCES
 SRC_DIR     = ./Src/
 SRC_FILES   = main.c 				\
                init.c 			\
@@ -31,31 +35,32 @@ SRC_FILES   = main.c 				\
                automaton.c 	\
                actions.c 		\
 							 mlx.c				\
-							 utils.c			\
-
-
+							 camera.c			\
+							 render.c			\
+							 print.c			\
+							 utils.c			
 SRC         = $(addprefix $(SRC_DIR), $(SRC_FILES))
-# Comp# Cambiar para almacenar los archivos .o en el directorio objs/
+
+# OBJECTS
 OBJ_DIR     = ./objs/
 OBJ         = $(addprefix $(OBJ_DIR), $(SRC_FILES:.c=.o))
 
-CF          = -Wall -Wextra -Werror
-
-CF					+= -g3 -fsanitize=address
-
+# COMMANDS
 CC          = gcc
 MLX_CF      = -lm -lbsd -lmlx -lXext -lX11
+CF          = -Wall -Wextra -Werror
+CF					+= -g3 -fsanitize=address
 CFI         = -I$(INC_DIR)
 
 # Common commands
 RM          = rm -f
 
 # Rules
-all: $(NAME)
+all: $(BINARY)
 
-$(NAME): $(OBJ) $(LIBFT) $(MLX)
+$(BINARY): $(OBJ) $(LIBFT) $(MLX)
 	@printf "\n$(CY)Generating FdF executable...$(RC)\n"
-	$(CC) $(CF) -o $(NAME) $(OBJ) -L $(LFT_PATH) -L $(MLX_PATH) -lft $(MLX_CF)
+	$(CC) $(CF) -o $(BINARY) $(OBJ) -L $(LFT_PATH) -L $(MLX_PATH) -lft $(MLX_CF)
 	@printf "$(GR)Done!$(RC)\n\n"
 
 # Regla para compilar los archivos .c en .o dentro del directorio objs/
@@ -89,7 +94,7 @@ clean:
 
 fclean: clean
 	@printf "\n$(YE)Cleaning all additional objects and libraries...$(RC)\n"
-	$(RM) -rf $(NAME) objs/
+	$(RM) -rf $(BINARY) objs/
 	@make fclean -sC $(LFT_PATH)
 	@make clean -sC $(MLX_PATH)
 	@printf "$(GR)All libraries removed!$(RC)\n\n"

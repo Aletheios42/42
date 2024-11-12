@@ -69,7 +69,7 @@ int determine_token_type(const char *line, int state) {
 //(3) allocar memoria con realloc para el mapa y las dimensiones del map
 //(4) !! alocar memoria para map->colum
 //(5) llenar map->coors con los tokens
-int parser(t_map **map, char *map_file) {
+int parser(t_map *map, char *map_file) {
   int fd;
   char *line = NULL;
   int state;
@@ -81,7 +81,7 @@ int parser(t_map **map, char *map_file) {
   if (fd == -1)
     return -1;
 
-  (*map)->rows = -1;
+  map->rows = 0;
 
   state = state_expect_value;
   token = token_newline;
@@ -90,15 +90,20 @@ int parser(t_map **map, char *map_file) {
 
     printf("state: %d  token %d \n", state, token);
     // TODO revisar los limites de este if, creo que estan cambiados
-    if (current_automaton.action && !current_automaton.action(&line, map, fd))
-      return (free(line), -1);
+    if (current_automaton.action && current_automaton.action(&line, map, fd))
+      return (free(line),
+              printf("Saliendo de la funcion parser\n state: %d  token %d \n",
+                     state, token),
+              -1);
 
     state = current_automaton.next_state;
-    if (state == state_end)
+    if (state == state_end) {
+      (printf("ha salido del while\n"));
       break;
+    }
     if (state == state_invalid)
-      return (free(line), -1);
+      return (free(line), (printf("ha salido del while\n")), -1);
     token = determine_token_type(line, state);
   }
-  return (close(fd), 0);
+  return (close(fd), printf("saliendo de parser"), 0);
 }
