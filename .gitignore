@@ -1,1 +1,4 @@
-08_Minishell/.git
+
+*.o
+*.obj
+
