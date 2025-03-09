@@ -1,5 +1,5 @@
 archivos y su función:
-ºmain.c:
+main.c:
 
 Control principal del programa. Inicializa el mapa, la cámara y comienza el bucle de renderizado.
 parser.c (falta en el código actual):

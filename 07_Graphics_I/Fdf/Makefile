@@ -29,17 +29,17 @@ INC         = $(addprefix $(INC_DIR), $(INC_FILES))
 
 # SOURCES
 SRC_DIR     = ./Src/
-SRC_FILES   = main.c 				\
-               init.c 			\
+SRC_FILES   = main.c 			\
                parser.c 		\
-               automaton.c 	\
-               actions.c 		\
-							 mlx.c				\
-							 camera.c			\
-							 render.c			\
-							 print.c			\
-							 utils.c			
+		mlx.c			\
+		malloc.c		\
+		camera.c		\
+		render.c		\
+		proyections.c		\
+		print.c			\
+		utils.c			
 SRC         = $(addprefix $(SRC_DIR), $(SRC_FILES))
+#automaton.c 	\#
 
 # OBJECTS
 OBJ_DIR     = ./objs/

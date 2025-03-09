@@ -1,111 +1,81 @@
-#include "../Inc/fdf.h" // Asegúrate de que este archivo contenga las definiciones necesarias.
+#include "../Inc/fdf.h"
+#define BASE_HEX "0123456789ABCDEF"
 
-// hay un problema con el casteo.
-t_automaton **assign_automaton() {
-  static t_automaton state_automaton_table[state_count][token_count] = {
-      // Estado: state_expect_value
-      {{handle_height, state_expect_separator}, // token_height
-       {NULL, state_invalid},                   // token_comma
-       {handle_color, state_expect_separator},  // token_color
-       {handle_space, state_expect_value},      // token_space
-       {handle_newline, state_expect_value},    // token_newline
-       {NULL, state_end},                       // token_eof
-       {NULL, state_invalid}},                  // token_invalid
+void set_z_range(t_map *map) {
+  int max;
+  int min;
+  int i;
+  int j;
 
-      // Estado: state_expect_separator
-      {{NULL, state_invalid},                // token_height
-       {handle_comma, state_expect_value},   // token_comma
-       {NULL, state_invalid},                // token_color
-       {handle_space, state_expect_value},   // token_space
-       {handle_newline, state_expect_value}, // token_newline
-       {NULL, state_end},                    // token_eof
-       {NULL, state_invalid}},               // token_invalid
-  };
-  static t_automaton *table[] = {
-      state_automaton_table[0],
-      state_automaton_table[1],
-  };
-  return table;
-}
-
-// Función para determinar el tipo de token basado en el estado y la línea
-int determine_token_type(const char *line, int state) {
-
-  // Determinar si es un token_height (primer carácter es dígito o '-' seguido
-  // de dígito)
-  if (((line[0] >= '0' && line[0] <= '9') || (line[0] == '-')) &&
-      (state == state_expect_value)) {
-    return token_height;
-  }
-
-  // Determinar si es un token_color (valor hexadecimal) y si el estado anterior
-  // era expect_separator
-  else if (ft_strncmp(line, "0x", 2) == 0) {
-    return token_color;
-  }
-
-  // Determinar si es un token_comma y el estado anterior era expect_value
-  else if (line[0] == ',' && state == state_expect_value) {
-    return token_comma;
-  }
-
-  // Determinar si es un token_space y el estado anterior era expect_separator
-  else if (line[0] == ' ' && state == state_expect_separator) {
-    return token_space;
-  }
-
-  // Determinar si es un token_newline y el estado anterior era expect_separator
-  else if (line[0] == '\n' && state == state_expect_separator) {
-    return token_newline;
-  }
-
-  else if (line[0] == '\0')
-    return token_eof;
-  // Si ninguna de las condiciones anteriores se cumple, es un token_invalid
-  return token_invalid;
-}
-
-// Esta funcion se dedica a leer el mapa a traves de :
-//(1) leer a linea,
-//(2) contar los temrinos por linea
-//(3) allocar memoria con realloc para el mapa y las dimensiones del map
-//(4) !! alocar memoria para map->colum
-//(5) llenar map->coors con los tokens
-int parser(t_map *map, char *map_file) {
-  int fd;
-  char *line = NULL;
-  int state;
-  int token;
-  t_automaton current_automaton;
-  t_automaton **state_automaton = assign_automaton();
-
-  fd = open(map_file, O_RDONLY);
-  if (fd == -1)
-    return -1;
-
-  map->rows = 0;
-
-  state = state_expect_value;
-  token = token_newline;
-  while (state != state_end) {
-    current_automaton = state_automaton[state][token];
-
-    printf("state: %d  token %d \n", state, token);
-    // TODO revisar los limites de este if, creo que estan cambiados
-    if (current_automaton.action && current_automaton.action(&line, map, fd))
-      return (free(line),
-              printf("Saliendo de la funcion parser\n state: %d  token %d \n",
-                     state, token),
-              -1);
-
-    state = current_automaton.next_state;
-    if (state == state_end) {
-      (printf("ha salido del while\n"));
-      break;
+  max = INT_MIN;
+  min = INT_MAX;
+  i = -1;
+  while (++i < map->rows) {
+    j = -1;
+    while (++j < map->cols[map->rows]) {
+      if (map->coors[i][j].height < max)
+        max = map->coors[i][j].height;
+      if (map->coors[i][j].height > min)
+        min = map->coors[i][j].height;
     }
-    if (state == state_invalid)
-      return (free(line), (printf("ha salido del while\n")), -1);
-    token = determine_token_type(line, state);
   }
-  return (close(fd), printf("saliendo de parser"), 0);
+}
+void get_tok(char *str, t_point *point) {
+  static char *saveptr;
+
+  if (str != NULL)
+    saveptr = str;
+
+  while (*saveptr && ft_isspace((unsigned char)*saveptr))
+    saveptr++;
+
+  point->height = ft_atoi(saveptr);
+  if (*saveptr == '+' || *saveptr == '-')
+    saveptr++;
+  while (*saveptr >= '0' && *saveptr <= '9')
+    saveptr++;
+
+  if (*saveptr == ',') {
+    point->native = true;
+    saveptr += 3;
+    point->color = ft_atoi_base(saveptr, BASE_HEX);
+    while (ft_ishex(*saveptr))
+      saveptr++;
+  } else {
+    point->native = false;
+    point->color = 0;
+  }
+}
+
+int parser(t_map *map, char *map_file) {
+  char *line;
+  int fd;
+  int i;
+
+  if (!ft_open(&fd, map_file))
+    return (1);
+  while (42) {
+    line = get_next_line(fd);
+    if (!line)
+      return (close(fd), 1);
+    if (!count_columns(line)) {
+      free(line);
+      continue;
+    }
+    if (!realloc_cols(line, &(map->cols), map->rows))
+      return (close(fd), 1);
+    if (!realloc_t_point(&(map->coors), map->rows, map->cols[map->rows]))
+      return (close(fd), 1);
+
+    i = 0;
+    while (i < map->cols[map->rows])
+      if (i == 0)
+        get_tok(line, &(map->coors[map->rows][i++]));
+      else
+        get_tok(NULL, &(map->coors[map->rows][i++]));
+
+    map->rows++;
+    free(line);
+  }
+  return (set_z_range(map), close(fd), 0);
 }

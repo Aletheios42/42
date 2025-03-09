@@ -65,6 +65,7 @@ char *ft_strtrim(char const *s1, char const *set);
 char *ft_itoa(int n);
 char **ft_split(char const *s, char c);
 int ft_seglen(char const *s, char c, int i);
+void *ft_realloc(void *old_ptr, size_t chunk_size, size_t num_chunks);
 int ft_security(char **matrix, int row);
 int ft_segcount(char const *s, char c);
 void ft_free_matrix(char **matrix);

@@ -3,11 +3,11 @@
 
 // Enumeración de los posibles estados en el autómata
 enum e_state {
-  state_expect_value,     // 0 Estado valor (height o color)
-  state_expect_separator, // 1 Estado separador (coma, espacio, nl)
-  state_end,              // 2 Estado final
-  state_invalid,          // 3 Estado para manejar entradas inválidas
-  state_count             // 4 Número total de estados
+  state_item,      // 0 Estado valor (height o color)
+  state_separator, // 1 Estado separador (coma, espacio, nl)
+  state_end,       // 2 Estado final
+  state_invalid,   // 3 Estado para manejar entradas inválidas
+  state_count      // 4 Número total de estados
 };
 
 // Enumeración de los posibles tokens que puede procesar el autómata
@@ -22,32 +22,26 @@ enum e_token {
   token_count    // 7 Número total de tipos de tokens
 };
 
-// Forward declaration of the map structure
 typedef struct s_map t_map;
 
-// Transition structure for the automaton
-struct s_automaton {
-  int (*action)(char **, t_map *,
-                int);      // Pointer to function for token actions
-  enum e_state next_state; // The next state after the action
-};
-
-// Typedef for easier use of s_automaton structure
-typedef struct s_automaton t_automaton;
-
-// Structure representing a point in 3D space
 typedef struct s_point {
-  int height; // height value associated with the point
-  int color;  // Color value associated with the point
+  int height;  // height value associated with the point
+  int color;   // Color value associated with the point
+  bool native; // If point`s color was specified in source map
 } t_point;
 
-// Map structure definition
+typedef struct s_pixel {
+  int x;
+  int y;
+  int color;
+} t_pixel;
+
 struct s_map {
-  t_point **coors; // 3D array storing the map data
-  int *cols;       // Array of column counts per row
-  int rows;        // Total number of rows
-  int max_z;       // Maximum Z value (height)
-  int min_z;       // Minimum Z value (height)
+  t_point **coors;      // 3D array storing the parsered map data
+  t_pixel **proj_coors; // 3D array storing the projected map to render
+  int *cols;            // Array of column counts per row
+  int rows;             // Total number of rows
+  int z_range[2];       // Maximum Z value (height)
 };
 
 // Camera settings for rendering the map

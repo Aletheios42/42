@@ -2,33 +2,28 @@
 #include "../Inc/fdf.h"
 
 void init_window(t_mlx *mlx) {
-  mlx->mlx = mlx_init(); // Inicializa MiniLibX
-
-  mlx->win = mlx_new_window(mlx->mlx, WIN_HEIGHT, WIN_WIDTH,
-                            "mlx"); // Crear la nueva ventana
+  mlx->mlx = mlx_init();
+  mlx->win = mlx_new_window(mlx->mlx, WIN_HEIGHT, WIN_WIDTH, "mlx");
+  mlx->img = mlx_new_image(mlx->mlx, WIN_HEIGHT, WIN_WIDTH);
+  mlx->addr =
+      mlx_get_data_addr(mlx->img, &(mlx->bpp), &(mlx->lpl), &(mlx->endian));
 }
 
-// Aquí llamarías a una función para parsear el mapa, por ejemplo:
-// if (parse_map(fd, mlx->map) == -1) {
-//     close(fd);
-//     mlx_destroy_window(fdf->mlx, fdf->win); // Libera la ventana si hay
-//     error en el parsing free(fdf->map); free(fdf); return -1;
-// }
+void my_mlx_pixel_put(t_mlx *mlx, int x, int y, int color) {
+  char *dst;
+
+  dst = mlx->addr + (y * mlx->lpl + x * (mlx->bpp / 8));
+  *(unsigned int *)dst = color;
+}
 
 int close_window(t_mlx *mlx) {
   mlx_destroy_window(mlx->mlx, mlx->win);
-  exit(0); // Salir del programa
+  exit(0);
 }
 
 int handle_keypress(int keycode, t_mlx *mlx) {
-  if (keycode == KEY_ESC) { // Comprobar si la tecla 'ESC' fue presionada
-    close_window(mlx);      // Llama a la función para cerrar la ventana
+  if (keycode == KEY_ESC) {
+    close_window(mlx);
   }
-  // Aquí puedes manejar otras teclas según sea necesario
   return (0);
-}
-
-void render_map(t_fdf *fdf) {
-  (void)fdf; // Esto previene el warning de parámetro no utilizado
-  return;
 }

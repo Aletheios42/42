@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include "../Inc/fdf.h"
 
 void print_int_array(int *arr, int size) {
   if (arr == NULL) {
@@ -11,4 +11,16 @@ void print_int_array(int *arr, int size) {
     printf("%d ", arr[i]);
   }
   printf("\n");
+}
+
+void print_map(t_map map) {
+  int i = -1;
+
+  while (++i < map.rows) {
+    int j = -1;
+    while (++j < map.cols[i])
+      printf("%i,0x%06X ", map.coors[i][j].height,
+             (unsigned)map.coors[i][j].color);
+    printf("\n");
+  }
 }
