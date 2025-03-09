@@ -12,7 +12,7 @@ void set_z_range(t_map *map) {
   i = -1;
   while (++i < map->rows) {
     j = -1;
-    while (++j < map->cols[map->rows]) {
+    while (++j < map->cols[i]) {
       if (map->coors[i][j].height < max)
         max = map->coors[i][j].height;
       if (map->coors[i][j].height > min)
@@ -20,31 +20,32 @@ void set_z_range(t_map *map) {
     }
   }
 }
-void get_tok(char *str, t_point *point) {
+t_point get_tok(char *str, int x, int y) {
   static char *saveptr;
+  t_point point;
 
   if (str != NULL)
     saveptr = str;
-
   while (*saveptr && ft_isspace((unsigned char)*saveptr))
     saveptr++;
-
-  point->height = ft_atoi(saveptr);
+  point.x = x;
+  point.y = y;
+  point.height = ft_atoi(saveptr);
   if (*saveptr == '+' || *saveptr == '-')
     saveptr++;
   while (*saveptr >= '0' && *saveptr <= '9')
     saveptr++;
-
   if (*saveptr == ',') {
-    point->native = true;
+    point.native = true;
     saveptr += 3;
-    point->color = ft_atoi_base(saveptr, BASE_HEX);
+    point.color = ft_atoi_base(saveptr, BASE_HEX);
     while (ft_ishex(*saveptr))
       saveptr++;
   } else {
-    point->native = false;
-    point->color = 0;
+    point.native = false;
+    point.color = 0;
   }
+  return point;
 }
 
 int parser(t_map *map, char *map_file) {
@@ -58,7 +59,7 @@ int parser(t_map *map, char *map_file) {
     line = get_next_line(fd);
     if (!line)
       return (close(fd), 1);
-    if (!count_columns(line)) {
+    if (!count_columns(line)) { // mirar para las lineas
       free(line);
       continue;
     }
@@ -66,14 +67,13 @@ int parser(t_map *map, char *map_file) {
       return (close(fd), 1);
     if (!realloc_t_point(&(map->coors), map->rows, map->cols[map->rows]))
       return (close(fd), 1);
-
-    i = 0;
-    while (i < map->cols[map->rows])
+    i = -1;
+    while (++i < map->cols[map->rows]) {
       if (i == 0)
-        get_tok(line, &(map->coors[map->rows][i++]));
+        map->coors[map->rows][i] = get_tok(line, map->rows, i);
       else
-        get_tok(NULL, &(map->coors[map->rows][i++]));
-
+        map->coors[map->rows][i] = get_tok(NULL, map->rows, i);
+    }
     map->rows++;
     free(line);
   }

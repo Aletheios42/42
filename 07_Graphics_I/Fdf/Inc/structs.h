@@ -25,6 +25,8 @@ enum e_token {
 typedef struct s_map t_map;
 
 typedef struct s_point {
+  int x;
+  int y;
   int height;  // height value associated with the point
   int color;   // Color value associated with the point
   bool native; // If point`s color was specified in source map
