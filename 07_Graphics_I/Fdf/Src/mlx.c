@@ -2,8 +2,15 @@
 
 void init_window(t_mlx *mlx) {
   mlx->mlx = mlx_init();
-  mlx->win = mlx_new_window(mlx->mlx, WIN_HEIGHT, WIN_WIDTH, "mlx");
-  mlx->img = mlx_new_image(mlx->mlx, WIN_HEIGHT, WIN_WIDTH);
+  mlx->win = mlx_new_window(mlx->mlx, WIN_WIDTH, WIN_HEIGHT, "mlx");
+  mlx->img = mlx_new_image(mlx->mlx, WIN_WIDTH, WIN_HEIGHT);
+  mlx->addr =
+      mlx_get_data_addr(mlx->img, &(mlx->bpp), &(mlx->lpl), &(mlx->endian));
+}
+
+void refresh_frame(t_mlx *mlx) {
+  mlx_destroy_image(mlx->mlx, mlx->img);
+  mlx->img = mlx_new_image(mlx->mlx, WIN_WIDTH, WIN_HEIGHT);
   mlx->addr =
       mlx_get_data_addr(mlx->img, &(mlx->bpp), &(mlx->lpl), &(mlx->endian));
 }

@@ -12,8 +12,11 @@ int main(int ac, char **av) {
   if (parser(&map, av[1]) == -1)
     return (1);
 
-  print_original_map(map);
+  /*print_original_map(map);*/
+
+  ft_memset(&mlx, 0, sizeof(t_mlx));
   init_window(&mlx);
+
   init_camera(&camera);
 
   render(&map, &camera, &mlx);
@@ -23,9 +26,5 @@ int main(int ac, char **av) {
   // Hook para manejar
   mlx_hook(mlx.win, 2, 1, handle_keypress, mlx.mlx);
   mlx_loop(mlx.mlx);
-
-  /*
-  ft_free_map(&map);
-   */
   return (0);
 }

@@ -19,7 +19,10 @@ void set_z_range(t_map *map) {
         min = map->coors[i][j].height;
     }
   }
+  map->z_range[0] = min;
+  map->z_range[1] = max;
 }
+
 t_point get_tok(char *str, int x, int y) {
   static char *saveptr;
   t_point point;
@@ -58,15 +61,15 @@ int parser(t_map *map, char *map_file) {
   while (42) {
     line = get_next_line(fd);
     if (!line)
-      return (close(fd), 1);
+      return (set_z_range(map), close(fd), 1);
     if (!count_columns(line)) { // mirar para las lineas
       free(line);
       continue;
     }
     if (!realloc_cols(line, &(map->cols), map->rows))
-      return (close(fd), 1);
+      return (close(fd), 0);
     if (!realloc_t_point(&(map->coors), map->rows, map->cols[map->rows]))
-      return (close(fd), 1);
+      return (close(fd), 0);
     i = -1;
     while (++i < map->cols[map->rows]) {
       if (i == 0)
@@ -77,5 +80,5 @@ int parser(t_map *map, char *map_file) {
     map->rows++;
     free(line);
   }
-  return (set_z_range(map), close(fd), 0);
+  return (set_z_range(map), close(fd), 1);
 }
