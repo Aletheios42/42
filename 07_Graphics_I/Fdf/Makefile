@@ -35,6 +35,7 @@ SRC_FILES   = main.c 			\
 		malloc.c		\
 		camera.c		\
 		render.c		\
+		draw.c			\
 		proyections.c		\
 		print.c			\
 		utils.c			

@@ -29,6 +29,8 @@ int close_window(t_mlx *mlx);
 
 // render.c
 int render(t_map *map, t_cam *camera, t_mlx *mlx);
+// draw.c
+void set_segment(t_pixel **mesh, int i, int j, t_mlx *mlx);
 
 // proyec.c
 int interpolColor(int height, int z_range[2]);

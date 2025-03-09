@@ -12,7 +12,7 @@
 
 #include "pipex.h"
 
-int ft_first_child(int **fd, char **argv, char **env) {
+int ft_first_child(int *fd[], char **argv, char **env) {
   if (ft_strncmp(argv[1], "here_doc", 9) == 0) {
     child_heredoc(fd, argv, env);
     return (1);
