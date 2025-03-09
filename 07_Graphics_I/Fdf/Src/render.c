@@ -17,12 +17,11 @@ void apply_pespective(int proyection, t_map *map) {
   i = -1;
   while (++i < map->rows) {
     j = -1;
-    while (++j < map->cols[map->rows]) {
+    while (++j < map->cols[i]) {
       map->proj_coors[i][j] =
           pespectives_array[proyection](map->coors[i][j], map->z_range);
     }
   }
-  printf("Doing proyection: %i \n", proyection);
 }
 
 int render(t_map *map, t_cam *camera, t_mlx *mlx) {
