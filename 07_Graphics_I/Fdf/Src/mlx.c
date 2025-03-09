@@ -1,4 +1,3 @@
-
 #include "../Inc/fdf.h"
 
 void init_window(t_mlx *mlx) {
@@ -17,7 +16,9 @@ void my_mlx_pixel_put(t_mlx *mlx, int x, int y, int color) {
 }
 
 int close_window(t_mlx *mlx) {
+  mlx_destroy_image(mlx->mlx, mlx->img);
   mlx_destroy_window(mlx->mlx, mlx->win);
+  mlx_destroy_display(mlx->mlx);
   exit(0);
 }
 

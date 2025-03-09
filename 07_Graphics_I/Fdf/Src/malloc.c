@@ -1,7 +1,5 @@
 #include "../Inc/fdf.h"
 
-#include <stdlib.h>
-
 void ft_free_map(t_map *map) {
   int i;
 
@@ -16,6 +14,22 @@ void ft_free_map(t_map *map) {
   }
   if (map->cols)
     free(map->cols);
+}
+
+int malloc_mesh(t_pixel ***mesh, int rows, int *cols) {
+  int i;
+
+  *mesh = (t_pixel **)malloc(sizeof(t_point *) * rows);
+  if (!*mesh)
+    return 0;
+
+  i = -1;
+  while (++i < rows) {
+    (*mesh)[i] = (t_pixel *)malloc(sizeof(t_pixel) * cols[i]);
+    if (!(*mesh)[i])
+      return 0;
+  }
+  return 1;
 }
 
 int realloc_cols(char *line, int **col, int rows) {

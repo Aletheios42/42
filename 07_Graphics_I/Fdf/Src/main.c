@@ -12,22 +12,19 @@ int main(int ac, char **av) {
   if (parser(&map, av[1]) == -1)
     return (1);
 
+  print_original_map(map);
   init_window(&mlx);
-
   init_camera(&camera);
 
   render(&map, &camera, &mlx);
 
+  // Hook para cerrar la ventana
+  mlx_hook(mlx.win, 17, 1, close_window, mlx.mlx);
+  // Hook para manejar
+  mlx_hook(mlx.win, 2, 1, handle_keypress, mlx.mlx);
   mlx_loop(mlx.mlx);
 
-  /*// Configuramos eventos*/
-  /*mlx_hook(mlx.win, 17, 0, close_window,*/
-  /*         mlx.mlx); // Hook para cerrar la ventana*/
-  /*mlx_key_hook(mlx.win, handle_keypress, mlx.mlx); // Hook para manejar
-   * teclas*/
-
   /*
-  print_map(map);
   ft_free_map(&map);
    */
   return (0);

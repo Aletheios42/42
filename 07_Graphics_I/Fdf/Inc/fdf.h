@@ -4,13 +4,7 @@
 #include "../Libft/libft.h"
 #include "../minilibx_linux/mlx.h"
 
-#include <ctype.h>
-#include <fcntl.h>
-#include <math.h>
 #include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 
 #include "colors.h"
 #include "keys.h"
@@ -45,11 +39,13 @@ t_pixel proj_orthogonal(t_point point, int z_range[2]);
 
 // print.c
 void print_int_array(int *arr, int size);
-void print_map(t_map map);
+void print_projected_map(t_map map);
+void print_original_map(t_map map);
 
 // malloc.c
 int realloc_cols(char *line, int **col, int rows);
 int realloc_t_point(t_point ***coors, int rows, int ncols);
+int malloc_mesh(t_pixel ***mesh, int rows, int *cols);
 void ft_free_map(t_map *map);
 
 // utils.c
