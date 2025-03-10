@@ -2,7 +2,7 @@
 
 void init_window(t_mlx *mlx) {
   mlx->mlx = mlx_init();
-  mlx->win = mlx_new_window(mlx->mlx, WIN_WIDTH, WIN_HEIGHT, "mlx");
+  mlx->win = mlx_new_window(mlx->mlx, WIN_WIDTH, WIN_HEIGHT, "Visualizer");
   mlx->img = mlx_new_image(mlx->mlx, WIN_WIDTH, WIN_HEIGHT);
   mlx->addr =
       mlx_get_data_addr(mlx->img, &(mlx->bpp), &(mlx->lpl), &(mlx->endian));

@@ -37,7 +37,7 @@ void print_projected_map(t_pixel **mesh, t_map map) {
   while (++i < map.rows) {
     int j = -1;
     while (++j < map.cols[i])
-      printf("%i, %i, 0x%06X ", mesh[i][j].x, mesh[i][j].y,
+      printf("%i,%i, 0x%06X ", mesh[i][j].x, mesh[i][j].y,
              (unsigned)mesh[i][j].color);
     printf("\n");
   }

@@ -103,7 +103,7 @@ void apply_pespective(t_pixel ***mesh, t_cam *camera, t_map *map) {
 }
 
 int render(t_map *map, t_cam *camera, t_mlx *mlx) {
-  int i = 0;
+  int i;
   int j;
   t_pixel **mesh;
 
@@ -118,11 +118,12 @@ int render(t_map *map, t_cam *camera, t_mlx *mlx) {
   normalizeObject(&mesh, map);
   /* 4. Apply camera transformation (rotation, scaling, offset) */
   applyCameraTransform(&mesh, camera, map);
-  /*print_projected_map(mesh, *map);*/
+  print_projected_map(mesh, *map);
 
-  while (i < map->rows - 1) {
-    j = 0;
-    while (j < map->cols[i] - 1)
+  i = -1;
+  while (++i < map->rows - 1) {
+    j = -1;
+    while (++j < map->cols[i] - 1)
       set_segment(mesh, i, j, mlx);
   }
   mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img, 0, 0);

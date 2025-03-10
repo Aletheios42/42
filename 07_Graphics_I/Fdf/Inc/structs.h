@@ -43,6 +43,20 @@ typedef struct s_mlx {
   int endian;
 } t_mlx;
 
+// Define la estructura para almacenar los parámetros de Bresenham
+typedef struct s_bresenham {
+  int x0;
+  int y0;
+  int x1;
+  int y1;
+  int dx;
+  int dy;
+  int sx;
+  int sy;
+  int err;
+  int e2;
+} t_bresenham;
+
 // Main FDF structure representing the entire program state
 typedef struct s_fdf {
   t_mlx *mlx; // Pointer to graphic tools
