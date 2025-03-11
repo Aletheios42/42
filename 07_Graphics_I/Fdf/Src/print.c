@@ -15,6 +15,7 @@ void print_int_array(int *arr, int size) {
 void print_original_map(t_map map) {
   int i = -1;
 
+  printf("Imprimiendo mapa original...\n");
   printf("map dimensions: rows: %i\n", map.rows);
   printf("Ancho de las columnas: ");
   while (++i < map.rows) {
@@ -22,6 +23,7 @@ void print_original_map(t_map map) {
   }
   printf("\n");
   printf("map height range: %i - %i\n", map.z_range[0], map.z_range[1]);
+  i = -1;
   while (++i < map.rows) {
     int j = -1;
     while (++j < map.cols[i])
@@ -34,6 +36,7 @@ void print_original_map(t_map map) {
 void print_projected_map(t_pixel **mesh, t_map map) {
   int i = -1;
 
+  printf("Imprimiendo malla...\n");
   while (++i < map.rows) {
     int j = -1;
     while (++j < map.cols[i])
